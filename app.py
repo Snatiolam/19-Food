@@ -1,11 +1,9 @@
-
 from flask import Flask, render_template, url_for, request, redirect
 from flask_sqlalchemy import SQLAlchemy
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'
 db = SQLAlchemy(app)
-
 
 #Anadir campo de texto donde se pueda anadir la imagen del restaurante
 
@@ -14,9 +12,6 @@ class Restaurantes(db.Model):
     tipo = db.Column(db.String(200), nullable=False) #Generar una tabla en el futuro
     nombre = db.Column(db.String(200), nullable=False)
     descripcion = db.Column(db.String(200), nullable=True)
-    
-    def __repr__(self):
-        return '<Restaurantes %r>' % self.id
 
 #Anadir campo de texto donde se pueda anadir la imagen del producto
 
@@ -26,17 +21,11 @@ class Productos(db.Model):
     precio = db.Column(db.String(200), nullable=False)
     descripcion = db.Column(db.String(200), nullable=True)
 
-    def __repr__(self):
-        return '<Productos %r>' % self.id
-
 class Usuarios(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(200), nullable=False)
     password = db.Column(db.String(200), nullable=False) # Hash, pero por ahora inseguro y directo
     email = db.Column(db.String(200), nullable=False)
-
-    def __repr__(self):
-        return '<Usuarios %r>' % self.id
 
 @app.route("/")
 def home():
@@ -70,7 +59,6 @@ def productos():
         productos = Productos.query.order_by(Productos.id).all()
         return render_template('maestra_pro.html', productos=productos)
 
-
 @app.route("/restaurante", methods=['GET', 'POST'])
 def restaurante():
     if request.method == 'POST':
@@ -89,7 +77,6 @@ def restaurante():
     else:
         res = Restaurantes.query.order_by(Restaurantes.id).all()
         return render_template('maestra_res.html', res=res)
-
 
 @app.route('/delete/<int:id>')
 def delete_producto(id):
@@ -119,8 +106,6 @@ def update_producto(id):
     else:
         return render_template('update_pro.html', productos=productos)
 
-
-
 @app.route('/delete/res/<int:id>')
 def delete_res(id):
     res_to_delete = Restaurantes.query.get_or_404(id)
@@ -148,8 +133,6 @@ def update_res(id):
 
     else:
         return render_template('update_res.html', res=res)
-
-
 
 if __name__ == "__main__":
     app.run(debug=True)     
