@@ -1,0 +1,52 @@
+{% extends 'layout.html' %}
+
+{% block head %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+{% endblock %}
+{% block body %}
+
+<h1>Productos para reservar: </h1>
+{% if productos|length < 1 %}
+    <h4 style="text-align: center">No tienes productos! Crea uno!</h4>
+{% else %}
+    <table>
+        <tr>
+            <th>Producto (IMG)</th>
+            <th>Nombre</th>
+            <th>Precio</th>
+            <th>Descripcion</th>
+            <th>Acciones</th>
+        </tr>
+        
+            {% for producto in productos %}
+            <tr>
+                <td>IMAGEN EN EL FUTURO</td>
+                <td>{{ producto.nombre }}</td>
+                <td>{{ producto.precio }}</td>
+                <td>{{ producto.descripcion }}</td>
+                <td>
+                    <a href="/update/{{producto.id}}">Actualizar producto</a>
+                    <br>
+                    <hr>
+                    <a href="/delete/{{producto.id}}">Eliminar producto</a>
+                </td>
+            </tr>
+            {% endfor %}
+    </table>
+{% endif %}
+
+<h1>Agrega producto: </h1>
+
+<div class="form">
+    <form action="" method="POST">
+        <input style="padding: 5px; margin-top: 4px;" type="text" name="nombre" id="nombre" placeholder="Nombre del producto" required>
+        <br>
+        <input style="padding: 5px; margin-top: 4px;" type="text" name="price" id="price" placeholder="Precio del producto" required>
+        <br>
+        <textarea style="padding: 5px; margin: 4px 0px 0px; width: 172px; height: 80px;" rows="5" cols="5" type="text" name="content" id="content" placeholder="Descripción"></textarea>
+        <br>
+        <input type="submit" value="Agrega un producto" style="padding: 5px; margin-top: 4px;">
+    </form>
+</div>
+
+{% endblock %}

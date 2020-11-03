@@ -1,0 +1,27 @@
+{% extends 'layout.html' %}
+
+{% block head %}
+{% endblock %}
+
+{% block body %}
+<div class="content">
+    <h1 style="text-align: center">Actualizar datos del producto</h1>
+
+    <div class="form">
+        <form action="/update/{{productos.id}}" method="POST">
+
+
+            <input style="padding: 5px; margin-top: 4px;" type="text" name="nombre" id="nombre"
+                placeholder="Nombre del producto" value="{{productos.nombre}}" required>
+            <br>
+            <input style="padding: 5px; margin-top: 4px;" type="text" name="price" id="price"
+                placeholder="Precio del producto" value="{{productos.precio}}" required>
+            <br>
+            <textarea style="padding: 5px; margin-top: 4px;" rows="5" cols="22" type="text" name="content" id="content"
+                placeholder="Descripción" >{{productos.descripcion}}</textarea>
+            <br>
+            <input type="submit" value="Actualizar" style="padding: 5px; margin-top: 4px;">
+        </form>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,54 @@
+{% extends 'layout.html' %}
+
+{% block head %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+{% endblock %}
+{% block body %}
+
+<h1>Restaurantes para reservar: </h1>
+{% if res|length < 1 %}
+    <h4 style="text-align: center">No tienes restaurantes! Crea uno!</h4>
+{% else %}
+    <table>
+        <tr>
+            <th>Foto Restaurante (IMG)</th>
+            <th>Nombre</th>
+            <th>Tipo</th>
+            <th>Descripcion</th>
+            <th>Acciones</th>
+        </tr>
+        
+            {% for resta in res %}
+            <tr>
+                <td>IMAGEN EN EL FUTURO</td>
+                <td>{{ resta.nombre }}</td>
+                <td>{{ resta.tipo }}</td>
+                <td>{{ resta.descripcion }}</td>
+                <td>
+                    <a href="/update/res/{{resta.id}}">Actualizar Restaurante</a>
+                    <br>
+                    <hr>
+                    <a href="/delete/res/{{resta.id}}">Eliminar Restaurante</a>
+                    
+                </td>
+            </tr>
+            {% endfor %}
+    </table>
+{% endif %}
+
+<h1>Agrega Restaurante: </h1>
+
+<div class="form">
+    <form action="" method="POST">
+        <input style="padding: 5px; margin-top: 4px;" type="text" name="nombre" id="nombre" placeholder="Nombre del producto" required>
+        <br>
+        <input style="padding: 5px; margin-top: 4px;" type="text" name="tipo" id="tipo" placeholder="Tipo de comida" required>
+        <br>
+        <textarea style="padding: 5px; margin: 4px 0px 0px; width: 172px; height: 80px;" rows="5" cols="5" type="text" name="descripcion" id="descripcion" placeholder="Descripción"></textarea>
+        <br>
+        <input type="submit" value="Agrega un Restaurante" style="padding: 5px; margin-top: 4px;">
+    </form>
+</div>
+
+
+{% endblock %}
