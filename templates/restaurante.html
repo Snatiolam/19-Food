@@ -57,7 +57,7 @@
 
     .product-info {
 	margin-top: auto;
-	padding-top: 5px;
+	padding-top: 20px;
 	text-align: center;
     }
 
@@ -116,8 +116,12 @@
 </style>
 <!-- ################################################### -->
 <div style="margin-top: 25px;">
-    {% if restaurantes|length < 1 %}
-    <h1 style="text-align: center; margin-bottom: 100px; margin-top: 50px;">No hay restaurantes disponibles</h1>
+    <div style="text-align: center;">
+        <h1><b>{{ restaurante.nombre  }}</b></h1>
+        <img style="max-width: 200px" src="{{ restaurante.img_url }}"></div>
+    <hr>
+    {% if productos|length < 1 %}
+    <h1 style="text-align: center; margin-bottom: 100px;">No hay productos disponibles</h1>
     <h2 style="text-align: center; margin-bottom: 100px; margin-top: 100px;">Ingresa mas tarde porfavor</h1>
     {% else %}
 
@@ -138,18 +142,17 @@
 </div>
 
 <section id="searchSection" class="products">
-    {% for restaurante in restaurantes%}
-    <div style="max-width:200px;" class="product-card {{restaurante.tipo}}">
+    {% for producto in productos %}
+    <div class="product-card {{producto.tipo}}">
 	<div class="product-image">
-            <a href="/restaurantes/res/{{restaurante.id}}">
-                <img style="max-height:150px;" src="{{restaurante.img_url}}" alt="Product Image">
+            <a href="/productos/prod/{{producto.id}}">
+		<img src="{{producto.img_url}}" alt="Product Image">
 	    </a>
 	</div>
-	    <img style="margin-top: auto; padding-top:25px;float:left;flex: 1 16%;flex-direction: column;max-width:50px;max-height:80px;"src="{{restaurante.img_url}}" alt="Product Image">
 	<div>
 	    <div class="product-info">
-		<h5>{{restaurante.nombre}}</h5>
-		<h6>{{restaurante.tipo}}</h6>
+		<h5>{{producto.nombre}}</h5>
+		<h6>{{producto.tipo}}</h6>
 	    </div>
 	</div>
     </div>
