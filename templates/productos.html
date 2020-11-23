@@ -1,8 +1,8 @@
 {% extends "layout.html" %}
-{#{% import "bootstrap/wtf.html" as wtf %}#} 
+{% import "bootstrap/wtf.html" as wtf %}
 
 
-{% block body %}
+{% block info%}
 <style>
     section,
     div { margin: 0;
@@ -117,7 +117,8 @@
 <!-- ################################################### -->
 <div style="margin-top: 25px;">
     {% if productos|length < 1 %}
-    <h1 style="text-align: center; margin-bottom: 100px;">No hay productos disponibles</h1>
+    <h1 style="text-align: center; margin-bottom: 100px; margin-top: 50px;">No hay productos disponibles</h1>
+    <h2 style="text-align: center; margin-bottom: 100px; margin-top: 100px;">Ingresa mas tarde porfavor</h1>
     {% else %}
 
 <div style="text-align: center; margin-bottom: 25px;">
