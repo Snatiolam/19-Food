@@ -180,6 +180,14 @@ def restaurants():
     restaurantes = Restaurantes.query.order_by(Restaurantes.id).all()
     return render_template('restaurantes.html', restaurantes=restaurantes, tipo=tipo)
 
+@app.route("/res/<int:id>", methods=['GET', 'POST'])
+def rest_prods(id):
+    tipo = "all"
+    if request.method == 'POST':
+        tipo = request.form.get("tipo")
+    restaurantes = Restaurantes.query.order_by(Restaurantes.id).all()
+    return render_template('error.html', restaurantes=restaurantes, tipo=tipo)
+
 @app.route("/restaurante", methods=['GET', 'POST'])
 def restaurante():
     if request.method == 'POST':
