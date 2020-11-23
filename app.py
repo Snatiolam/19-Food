@@ -40,7 +40,7 @@ class Usuarios(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(200), nullable=False)
     email = db.Column(db.String(200), nullable=False)
-    is_admin = db.Column(db.Boolean(), default=False, nullable=False)
+    is_admin = db.Column(db.Boolean(), default = False, nullable = False )
     password = db.Column(db.String(200), nullable=False) # Hash, pero por ahora inseguro y directo
 
 @login_manager.user_loader
@@ -101,7 +101,7 @@ def registro():
                 else:
                     db.session.add(new_user)
                     db.session.commit()
-                    return redirect(url_for('index'))
+                    return redirect(url_for('home'))
             except:
                 return redirect(url_for('error'))    
         return render_template('register.html', form=form , error="")
@@ -222,10 +222,11 @@ def update_res(id):
         return render_template('update_res.html', res=res)
 
 if __name__ == "__main__":
-    hashed_password = generate_password_hash("12345678", method="sha256")
-    new_user = Usuarios(username="admin", email="admin@gmail.com", is_admin=True,password=hashed_password)
+    hashed_password = generate_password_hash("12345678", method='sha256')
+    new_user = Usuarios(username="admin", email="admon.sojas@gmail.com",
+                    is_admin=True, password=hashed_password)
     comp_user = Usuarios.query.filter_by(username="admin").first()
-    comp_email = Usuarios.query.filter_by(email="admin@gmail.com")
+    comp_email = Usuarios.query.filter_by(email="admon.sojas@gmail.com").first()
     if comp_user is not None or comp_email is not None:
         pass
     else:
