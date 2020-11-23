@@ -9,6 +9,7 @@
 {% if res|length < 1 %}
     <h4 style="text-align: center">No tienes restaurantes! Crea uno!</h4>
 {% else %}
+<h4>Todos los restaurantes</h4>
     <table>
         <tr>
             <th>Foto Restaurante (IMG)</th>
@@ -19,6 +20,33 @@
         </tr>
         
             {% for resta in res %}
+            <tr>
+                <td><img src="{{ resta.img_url }}" alt="Restaurant img"></td>
+                <td>{{ resta.nombre }}</td>
+                <td>{{ resta.tipo }}</td>
+                <td>{{ resta.descripcion }}</td>
+                <td>
+                    <a href="/update/res/{{resta.id}}">Actualizar Restaurante</a>
+                    <br>
+                    <hr>
+                    <a href="/delete/res/{{resta.id}}">Eliminar Restaurante</a>
+                    
+                </td>
+            </tr>
+            {% endfor %}
+    </table>
+    <h4>Tus restaurantes</h4>
+    <table>
+        <tr>
+
+            <th>Foto Restaurante (IMG)</th>
+            <th>Nombre</th>
+            <th>Tipo</th>
+            <th>Descripcion</th>
+            <th>Acciones</th>
+        </tr>
+        
+            {% for resta in mis_res %}
             <tr>
                 <td><img src="{{ resta.img_url }}" alt="Restaurant img"></td>
                 <td>{{ resta.nombre }}</td>

@@ -22,6 +22,7 @@ login_manager.login_view = 'login'
 
 class Restaurantes(db.Model):
     id = db.Column(db.Integer, primary_key=True)
+    id_user = db.Column(db.Integer, db.ForeignKey('usuarios.id'), nullable=False)
     img_url = db.Column(db.String(255), nullable=False)
     tipo = db.Column(db.String(200), nullable=False) #Generar una tabla en el futuro
     nombre = db.Column(db.String(200), nullable=False)
@@ -31,6 +32,7 @@ class Restaurantes(db.Model):
 
 class Productos(db.Model):
     id = db.Column(db.Integer, primary_key=True)
+    id_res = db.Column(db.Integer, db.ForeignKey('restaurantes.id'), nullable=False)
     img_url = db.Column(db.String(255), nullable=False)
     nombre = db.Column(db.String(200), nullable=False)
     precio = db.Column(db.String(200), nullable=False)
@@ -152,7 +154,7 @@ def restaurante():
         nombre = request.form['nombre']
         url = request.form['url']
         descripcion = request.form['descripcion']
-        new_task = Restaurantes(tipo = tipo, nombre = nombre, img_url=url, descripcion = descripcion)
+        new_task = Restaurantes(id_user=current_user.id,tipo = tipo, nombre = nombre, img_url=url, descripcion = descripcion)
 
         try:
             db.session.add(new_task)
@@ -163,7 +165,8 @@ def restaurante():
 
     else:
         res = Restaurantes.query.order_by(Restaurantes.id).all()
-        return render_template('maestra_res.html', res=res)
+        mis_res = Restaurantes.query.filter_by(id_user=current_user.id).all()
+        return render_template('maestra_res.html', res=res, mis_res=mis_res)
 
 @app.route('/delete/<int:id>')
 def delete_producto(id):
