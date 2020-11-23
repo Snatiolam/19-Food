@@ -63,9 +63,6 @@ class RegisterForm(FlaskForm):
     username = StringField('username', validators=[InputRequired(), Length(min=4, max=15)])
     password = PasswordField('password', validators=[InputRequired(), Length(min=8, max=80)])
 
-
-
-
 #La ruta de acceso primaria principal
 @app.route("/")
 def home():
@@ -133,15 +130,12 @@ def registro():
         return redirect(url_for('home')) 
     #return render_template("register.html")
 
-
 #Ya se puede desloguear sin ningun problema 
 @app.route('/logout')
 @login_required
 def logout():
     logout_user()
     return redirect(url_for('login'))
-
-
 
 @app.route("/productos", methods=['GET', 'POST'])
 def productos():
@@ -182,11 +176,12 @@ def restaurants():
 
 @app.route("/res/<int:id>", methods=['GET', 'POST'])
 def rest_prods(id):
+    restaurante = Restaurantes.query.get_or_404(id)
     tipo = "all"
     if request.method == 'POST':
         tipo = request.form.get("tipo")
     restaurantes = Restaurantes.query.order_by(Restaurantes.id).all()
-    return render_template('error.html', restaurantes=restaurantes, tipo=tipo)
+    return render_template('error.html', restaurante=restaurante, restaurantes=restaurantes, tipo=tipo)
 
 @app.route("/restaurante", methods=['GET', 'POST'])
 def restaurante():
