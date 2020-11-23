@@ -20,7 +20,7 @@
         
             {% for resta in res %}
             <tr>
-                <td>IMAGEN EN EL FUTURO</td>
+                <td><img src="{{ resta.img_url }}" alt="Restaurant img"></td>
                 <td>{{ resta.nombre }}</td>
                 <td>{{ resta.tipo }}</td>
                 <td>{{ resta.descripcion }}</td>
@@ -40,7 +40,9 @@
 
 <div class="form">
     <form action="" method="POST">
-        <input style="padding: 5px; margin-top: 4px;" type="text" name="nombre" id="nombre" placeholder="Nombre del producto" required>
+        <input style="padding: 5px; margin-top: 4px;" type="text" name="nombre" id="nombre" placeholder="Nombre del restaurante" required>
+        <br>
+        <input style="padding: 5px; margin-top: 4px;" type="text" name="url" id="url" placeholder="Imagen del restaurante" required>
         <br>
         <input style="padding: 5px; margin-top: 4px;" type="text" name="tipo" id="tipo" placeholder="Tipo de comida" required>
         <br>

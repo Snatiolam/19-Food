@@ -9,6 +9,7 @@ db = SQLAlchemy(app)
 
 class Restaurantes(db.Model):
     id = db.Column(db.Integer, primary_key=True)
+    img_url = db.Column(db.String(255), nullable=False)
     tipo = db.Column(db.String(200), nullable=False) #Generar una tabla en el futuro
     nombre = db.Column(db.String(200), nullable=False)
     descripcion = db.Column(db.String(200), nullable=True)
@@ -17,6 +18,7 @@ class Restaurantes(db.Model):
 
 class Productos(db.Model):
     id = db.Column(db.Integer, primary_key=True)
+    img_url = db.Column(db.String(255), nullable=False)
     nombre = db.Column(db.String(200), nullable=False)
     precio = db.Column(db.String(200), nullable=False)
     descripcion = db.Column(db.String(200), nullable=True)
@@ -44,9 +46,10 @@ def productos():
     if request.method == 'POST':
         
         name = request.form['nombre']
+        url = request.form['url']
         content = request.form['content']
         price = request.form['price']
-        new_task = Productos(nombre = name, precio = price, descripcion = content)
+        new_task = Productos(nombre = name,img_url=url, precio = price, descripcion = content)
 
         try:
             db.session.add(new_task)
@@ -59,13 +62,23 @@ def productos():
         productos = Productos.query.order_by(Productos.id).all()
         return render_template('maestra_pro.html', productos=productos)
 
+@app.route("/products", methods=['GET', 'POST'])
+def product():
+    tipo = "all"
+    if request.method == 'POST':
+        tipo = request.form.get("tipo")
+    productos = Productos.query.order_by(Productos.id).all()
+    return render_template('productos.html', productos=productos, tipo=tipo)
+
+
 @app.route("/restaurante", methods=['GET', 'POST'])
 def restaurante():
     if request.method == 'POST':
         tipo = request.form['tipo'] # Esta al final sera una clave foranea a otra tabla 
         nombre = request.form['nombre']
+        url = request.form['url']
         descripcion = request.form['descripcion']
-        new_task = Restaurantes(tipo = tipo, nombre = nombre, descripcion = descripcion)
+        new_task = Restaurantes(tipo = tipo, nombre = nombre, img_url=url, descripcion = descripcion)
 
         try:
             db.session.add(new_task)
