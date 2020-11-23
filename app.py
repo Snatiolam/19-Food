@@ -69,16 +69,21 @@ def login():
         if form.validate_on_submit():
             user = Usuarios.query.filter_by(username=form.username.data).first()
             if user:
-                if check_password_hash(user.password, form.password):
+                if check_password_hash(user.password, form.password.data):
                     login_user(user, remember=form.remember.data)
                     return redirect(url_for('home'))
 
-            return render_template('login.html', form=form)
+            return render_template('login.html', form=form, error = "No esta registrado! \n Registrate!")    
 
-        return render_template('login.html', form=form)
+        return render_template('login.html', form=form, error = "")
     else:
-        return redirect(url_for('home'))
+        return redirect(url_for('home'))  
    #  return render_template('login.html')
+
+
+@app.route('/error')
+def error():
+    return render_template('error.html')
 
 @app.route("/register", methods=['GET', 'POST'])
 def registro():
@@ -103,6 +108,12 @@ def registro():
     else:
         return redirect(url_for('home')) 
     #return render_template("register.html")
+
+@app.route('/logout')
+@login_required
+def logout():
+    logout_user()
+    return redirect(url_for('login'))
 
 @app.route("/productos", methods=['GET', 'POST'])
 def productos():
