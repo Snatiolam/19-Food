@@ -175,14 +175,11 @@ def restaurants():
     restaurantes = Restaurantes.query.order_by(Restaurantes.id).all()
     return render_template('restaurantes.html', restaurantes=restaurantes, tipo=tipo)
 
-@app.route("/res/<int:id>", methods=['GET', 'POST'])
+@app.route("/restaurantes/res/<int:id>", methods=['GET', 'POST'])
 def rest_prods(id):
     restaurante = Restaurantes.query.get_or_404(id)
-    tipo = "all"
-    if request.method == 'POST':
-        tipo = request.form.get("tipo")
-    restaurantes = Restaurantes.query.order_by(Restaurantes.id).all()
-    return render_template('error.html', restaurante=restaurante, restaurantes=restaurantes, tipo=tipo)
+    productos = Productos.query.filter_by(id_res=restaurante.id).all()
+    return render_template('restaurante.html', restaurante=restaurante, productos=productos)
 
 @app.route("/restaurante", methods=['GET', 'POST'])
 def restaurante():
