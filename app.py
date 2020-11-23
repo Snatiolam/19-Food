@@ -1,9 +1,18 @@
 from flask import Flask, render_template, url_for, request, redirect
 from flask_sqlalchemy import SQLAlchemy
+from flask_wtf import FlaskForm
+from wtforms import StringField, PasswordField, BooleanField
+from wtforms.validators import InputRequired, Email, Length
+from werkzeug.security import generate_password_hash, check_password_hash
+from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
+import random
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'
 db = SQLAlchemy(app)
+login_manager = LoginManager()
+login_manager.init_app(app)
+login_manager.login_view = 'login'
 
 #Anadir campo de texto donde se pueda anadir la imagen del restaurante
 
@@ -23,11 +32,26 @@ class Productos(db.Model):
     precio = db.Column(db.String(200), nullable=False)
     descripcion = db.Column(db.String(200), nullable=True)
 
-class Usuarios(db.Model):
+class Usuarios(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(200), nullable=False)
-    password = db.Column(db.String(200), nullable=False) # Hash, pero por ahora inseguro y directo
     email = db.Column(db.String(200), nullable=False)
+    is_admin = db.Column(db.Boolean(), default=False, nullable=False)
+    password = db.Column(db.String(200), nullable=False) # Hash, pero por ahora inseguro y directo
+
+@login_manager.user_loader
+def load_user(user_id):
+    return Usuarios.query.get(int(user_id))
+
+class LoginForm(FlaskForm):
+    username = StringField('username', validators=[InputRequired(), Length(min=4, max=15)])
+    password = PasswordField('password', validators=[InputRequired(), Length(min=8, max=80)])
+    remember = BooleanField('remember me')
+
+class RegisterForm(FlaskForm):
+    email = StringField('email', validators=[InputRequired(), Email(message='Invalid email'), Length(max=50)])
+    username = StringField('username', validators=[InputRequired(), Length(min=4, max=15)])
+    password = PasswordField('password', validators=[InputRequired(), Length(min=8, max=80)])
 
 @app.route("/")
 def home():
@@ -148,4 +172,13 @@ def update_res(id):
         return render_template('update_res.html', res=res)
 
 if __name__ == "__main__":
+    hashed_password = generate_password_hash("12345678", method="sha256")
+    new_user = Usuarios(username="admin", email="admin@gmail.com", is_admin=True,password=hashed_password)
+    comp_user = Usuarios.query.filter_by(username="admin").first()
+    comp_email = Usuarios.query.filter_by(email="admin@gmail.com")
+    if comp_user is not None or comp_email is not None:
+        pass
+    else:
+        db.session.add(new_user)
+        db.session.commit()
     app.run(debug=True)     
