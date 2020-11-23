@@ -27,7 +27,7 @@ else:
     db.session.commit()
 
 '''
-Usuarios salzatec1
+Usuario salzatec1
 '''
 
 user = Usuarios.query.filter_by(username="salzatec1").first()
@@ -50,6 +50,36 @@ else:
 
 new_restaurant = Restaurantes(id_user=user.id, img_url="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSQgXux0VzOt5zIpJGMuyaaDbtCYMUpD-KZeQ&usqp=CAU", tipo="ITA",nombre="Ragazzi",hor_abierto="9:00",hor_cierre="10:00",personas=12) 
 comp_rest = Restaurantes.query.filter_by(nombre="Ragazzi").first()
+if comp_rest is not None:
+    pass
+else:
+    db.session.add(new_restaurant)
+    db.session.commit()
+
+'''
+Usuario surregog
+'''
+
+user = Usuarios.query.filter_by(username="surregog").first()
+
+new_restaurant = Restaurantes(id_user=user.id, img_url="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRkapkVzPf_MGxrA2LSgjwu_6hh71nm42ZbIw&usqp=CAU", tipo="MEX",nombre="El chacho",hor_abierto="9:00",hor_cierre="10:00",personas=12) 
+comp_rest = Restaurantes.query.filter_by(nombre="El chacho").first()
+if comp_rest is not None:
+    pass
+else:
+    db.session.add(new_restaurant)
+    db.session.commit()
+
+new_restaurant = Restaurantes(id_user=user.id, img_url="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTHFtW8DxZdO2lyRLarotEQA9e9BckptlSpHg&usqp=CAU", tipo="PER",nombre="Miraflores",hor_abierto="9:00",hor_cierre="10:00",personas=12) 
+comp_rest = Restaurantes.query.filter_by(nombre="Miraflores").first()
+if comp_rest is not None:
+    pass
+else:
+    db.session.add(new_restaurant)
+    db.session.commit()
+
+new_restaurant = Restaurantes(id_user=user.id, img_url="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTzBvQZv2QFuNasiNMHI3Z20Th9g2SNR4xmCg&usqp=CAU", tipo="RAP",nombre="Los perritos",hor_abierto="9:00",hor_cierre="10:00",personas=12) 
+comp_rest = Restaurantes.query.filter_by(nombre="Los perritos").first()
 if comp_rest is not None:
     pass
 else:
