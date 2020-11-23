@@ -115,6 +115,48 @@
 
 </style>
 <!-- ################################################### -->
+<style>
+.button-reserva {
+  display: inline-block;
+  border-radius: 4px;
+  background-color: #f4511e;
+  border: none;
+  color: #FFFFFF;
+  text-align: center;
+  font-size: 16px;
+  padding: 5px;
+  width: 80%;
+  transition: all 0.5s;
+  cursor: pointer;
+  margin: 5px;
+}
+
+.button-reserva span {
+  cursor: pointer;
+  display: inline-block;
+  position: relative;
+  transition: 0.5s;
+}
+
+.button-reserva span:after {
+  content: '\00bb';
+  position: absolute;
+  opacity: 0;
+  top: 0;
+  right: -20px;
+  transition: 0.5s;
+}
+
+.button-reserva:hover span {
+  padding-right: 25px;
+}
+
+.button-reserva:hover span:after {
+  opacity: 1;
+  right: 0;
+}
+</style>
+<!-- ################################################### -->
 <div style="margin-top: 25px;">
     {% if restaurantes|length < 1 %}
     <h1 style="text-align: center; margin-bottom: 100px; margin-top: 50px;">No hay restaurantes disponibles</h1>
@@ -145,12 +187,16 @@
                 <img style="max-height:150px;" src="{{restaurante.img_url}}" alt="Product Image">
 	    </a>
 	</div>
-	    <img style="margin-top: auto; padding-top:25px;float:left;flex: 1 16%;flex-direction: column;max-width:50px;max-height:80px;"src="{{restaurante.img_url}}" alt="Product Image">
 	<div>
-	    <div class="product-info">
+	    <div  class="product-info">
 		<h5>{{restaurante.nombre}}</h5>
 		<h6>{{restaurante.tipo}}</h6>
 	    </div>
+            <div style="text-align:center;">
+	        <form>
+		    <button class="button-reserva" style="vertical-align:middle"><span>Reserva </span></button>
+                </form>
+            </div>
 	</div>
     </div>
     {% endfor%}
