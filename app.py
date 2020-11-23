@@ -1,5 +1,6 @@
 from flask import Flask, render_template, url_for, request, redirect
 from flask_sqlalchemy import SQLAlchemy
+from flask_bootstrap import Bootstrap
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, BooleanField
 from wtforms.validators import InputRequired, Email, Length
@@ -8,7 +9,10 @@ from flask_login import LoginManager, UserMixin, login_user, login_required, log
 import random
 
 app = Flask(__name__)
+app.config['SECRET_KEY'] = 'Thisissupposedtobesecret!'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = 'True'
+bootstrap = Bootstrap(app)
 db = SQLAlchemy(app)
 login_manager = LoginManager()
 login_manager.init_app(app)
@@ -59,7 +63,22 @@ def home():
 
 @app.route("/login", methods=['GET', 'POST'])
 def login():
-    return render_template("login.html")
+    if current_user.is_authenticated == False:
+        form = LoginForm()
+
+        if form.validate_on_submit():
+            user = User.query.filter_by(username=form.username.data).first()
+            if user:
+                if check_password_hash(user.password, form.password):
+                    login_user(user, remember=form.remember.data)
+                    return redirect(url_for('home'))
+
+            return render_template('login.html', form=form)
+
+        return render_template('login.html', form=form)
+    else:
+        return redirect(url_for('home'))
+   #  return render_template('login.html')
 
 @app.route("/register", methods=['GET', 'POST'])
 def registro():
