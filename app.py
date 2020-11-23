@@ -67,7 +67,7 @@ def login():
         form = LoginForm()
 
         if form.validate_on_submit():
-            user = User.query.filter_by(username=form.username.data).first()
+            user = Usuarios.query.filter_by(username=form.username.data).first()
             if user:
                 if check_password_hash(user.password, form.password):
                     login_user(user, remember=form.remember.data)
@@ -82,7 +82,27 @@ def login():
 
 @app.route("/register", methods=['GET', 'POST'])
 def registro():
-    return render_template("register.html")
+    if current_user.is_authenticated == False:
+        form = RegisterForm()
+
+        if form.validate_on_submit():
+            try:
+                hashed_password = generate_password_hash(form.password.data, method='sha256')
+                new_user = Usuarios(username=form.username.data, email=form.email.data, password=hashed_password)
+                comp_user = Usuarios.query.filter_by(username=form.username.data).first()
+                comp_email = Usuarios.query.filter_by(email=form.email.data).first()
+                if comp_user is not None or comp_email is not None:
+                    return render_template('register.html', form=form, error="El usuario o correo ya esta registrado! \n Ingrese uno diferente!")
+                else:
+                    db.session.add(new_user)
+                    db.session.commit()
+                    return redirect(url_for('index'))
+            except:
+                return redirect(url_for('error'))    
+        return render_template('register.html', form=form , error="")
+    else:
+        return redirect(url_for('home')) 
+    #return render_template("register.html")
 
 @app.route("/productos", methods=['GET', 'POST'])
 def productos():

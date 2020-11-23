@@ -1,18 +1,21 @@
 {% extends 'layout.html' %}
-
+{% import "bootstrap/wtf.html" as wtf %}
 {% block body %}
 
-<h1>Ingreso Usuario</h1>
-<form action="" method="POST">
-    <p>Usuario</p>
-    <input type="text" name="user" placeholder="Ingrese su usuario">
-    <p>Password</p>
-    <input type="password" name="pass" placeholder="Ingrese su contraseña">
-    <p>Password</p>
-    <input type="password" name="pass" placeholder="Ingrese su contraseña">
-    <p>Password</p>
-    <input type="password" name="pass" placeholder="Ingrese su contraseña">
-    <input type="submit" value="Iniciar Sesión">
-</form>
+<div class="container" style="padding: 32px 23em; ">
+
+  <form class="form-signin" method="POST" action="/register">
+    <h2 class="form-signin-heading">Registro de Usuario</h2>
+    {{ form.hidden_tag() }}
+    {{ wtf.form_field(form.username) }}
+    {{ wtf.form_field(form.email) }}
+    {{ wtf.form_field(form.password) }}
+    <button class="btn btn-lg btn-primary btn-block" type="submit">Registrarse</button>
+    {% if error != "" %}
+    <h2 class="form-signin-heading" style="font-size: 15px; color: red;">{{error}}</h2>
+    {% endif %}
+  </form>
+
+</div> <!-- /container -->
 
 {% endblock %}
