@@ -157,13 +157,19 @@
 }
 </style>
 <!-- ################################################### -->
-<div style="margin-top: 25px;">
-    <div style="text-align: center;">
-        <h1><b>{{ restaurante.nombre  }}</b></h1>
-        <img style="max-width: 200px" src="{{ restaurante.img_url }}">
-        <form>
-            <button class="button-reserva" style="vertical-align:middle"><span>Reserva </span></button>
-        </form>
+<div style="padding-top: 25px;">
+    <div style="padding-bottom: 200px; background-color: #6F7CBA;">
+        <div style="text-align:right; width:30%; float:left;">
+            <img style="max-width: 200px" src="{{ restaurante.img_url }}">
+        </div>
+        <div style="text-align:center; width:70%; float:right;">
+            <h1 style="height:auto;margin:0px;"><b>{{ restaurante.nombre }}</b></h1>
+            <h5 style="height:auto;margin:0px;"><b>{{ restaurante.tipo }}</b></h5>
+            <div><p>{{ restaurante.descripcion }}</p></div>
+            <form>
+                <button class="button-reserva" style="vertical-align:middle"><span>Reserva </span></button>
+            </form>
+        </div>
     </div>
     <hr>
     {% if productos|length < 1 %}
@@ -185,11 +191,12 @@
 		<img style="max-height:150px;" src="{{producto.img_url}}" alt="Product Image">
 	    </a>
 	</div>
-	<img style="margin-top: auto; padding-top:25px;float:left;flex: 1 16%;flex-direction: column;max-width:50px;max-height:80px;"src="{{restaurante.img_url}}" alt="Product Image">
+	<img style="margin-top: auto; padding-top:25px;float:left;flex: 1 16%;flex-direction: column;max-width:70px;max-height:80px;"src="{{restaurante.img_url}}" alt="Product Image">
 	<div>
 	    <div class="product-info">
-		<h5>{{ producto.nombre }}</h5>
-		<h6>${{ producto.precio }}</h6>
+                <h5><b>{{ producto.nombre }}</b></h5>
+                <p style="font-size:0.8em;">{{ restaurante.nombre }}</p>
+		<h6 style="text-align:center; margin-left: 40%;">${{ producto.precio }}</h6>
 	    </div>
 	</div>
     </div>
