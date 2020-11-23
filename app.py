@@ -172,6 +172,13 @@ def product():
     productos = Productos.query.order_by(Productos.id).all()
     return render_template('productos.html', productos=productos, tipo=tipo)
 
+@app.route("/restaurantes", methods=['GET', 'POST'])
+def restaurants():
+    tipo = "all"
+    if request.method == 'POST':
+        tipo = request.form.get("tipo")
+    restaurantes = Restaurantes.query.order_by(Restaurantes.id).all()
+    return render_template('restaurantes.html', restaurantes=restaurantes, tipo=tipo)
 
 @app.route("/restaurante", methods=['GET', 'POST'])
 def restaurante():

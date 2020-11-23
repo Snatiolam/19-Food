@@ -1,0 +1,254 @@
+{% extends "layout.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+
+
+{% block info%}
+<style>
+    section,
+    div { margin: 0;
+	padding: 0;
+	border: 0;
+	outline: 0;
+	font-size: 100%;
+	font: inherit;
+	vertical-align: baseline;
+    }
+
+    header,
+    section {
+	display: block;
+    }
+
+    h1 {
+	text-align: center; 
+	font-weight: 500;
+	line-height: 1.7em;
+    }
+
+    h5 {
+	font-weight: 500;
+	line-height: 1.7em;
+    }
+
+    h6 {
+	color: #666;
+	font-size: 14px;
+    }
+
+    .products {
+	display: flex;
+	flex-wrap: wrap;
+    }
+
+    .product-card {
+	/*display: flex;*/
+	display: none;
+	flex-direction: column;
+
+	padding: 2%;
+	flex: 1 16%;
+
+	box-shadow: 0px 0px 1px 0px rgba(0, 0, 0, 0.25);
+    }
+
+    .product-image img {
+	width: 100%;
+    }
+
+    .product-info {
+	margin-top: auto;
+	padding-top: 20px;
+	text-align: center;
+    }
+
+    // Searching bar
+
+    #searchInput {
+	background-position: 10px 12px; /* Position the search icon */
+	background-repeat: no-repeat; /* Do not repeat the icon image */
+	width: 100%; /* Full-width */
+	font-size: 16px; /* Increase font-size */
+	padding: 12px 20px 12px 40px; /* Add some padding */
+	border: 1px solid #ddd; /* Add a grey border */
+	margin-bottom: 12px; /* Add some space below the input */
+    }
+    // Filtering
+	.container {
+	overflow: hidden;
+    }
+
+    .filterDiv {
+	float: left;
+	background-color: #2196F3;
+	color: #ffffff;
+	width: 100px;
+	line-height: 100px;
+	text-align: center;
+	margin: 2px;
+	display: none; /* Hidden by default */
+    }
+
+    /* The "show" class is added to the filtered elements */
+    .show {
+	display: block;
+    }
+
+    /* Style the buttons */
+    .btn {
+	border: none;
+	outline: none;
+	padding: 12px 16px;
+	background-color: #f1f1f1;
+	cursor: pointer;
+    }
+
+    /* Add a light grey background on mouse-over */
+    .btn:hover {
+	background-color: #ddd;
+    }
+
+    /* Add a dark background to the active button */
+    .btn.active {
+	background-color: #666;
+	color: white;
+    }
+
+</style>
+<!-- ################################################### -->
+<div style="margin-top: 25px;">
+    {% if restaurantes|length < 1 %}
+    <h1 style="text-align: center; margin-bottom: 100px; margin-top: 50px;">No hay restaurantes disponibles</h1>
+    <h2 style="text-align: center; margin-bottom: 100px; margin-top: 100px;">Ingresa mas tarde porfavor</h1>
+    {% else %}
+
+<div style="text-align: center; margin-bottom: 25px;">
+    <i class="fas fa-search"></i>
+    <input type="text" id="searchInput" onkeyup="searchingFunc()" placeholder="Search for names..">
+</div>
+
+<!-- Control buttons -->
+<div id="myBtnContainer" style="text-align: center;">
+    <button class="btn" onclick="filterSelection('all')"> Todos</button>
+    <button class="btn" onclick="filterSelection('MEX')"> Mexicana</button>
+    <button class="btn" onclick="filterSelection('PER')"> Peruana</button>
+    <button class="btn" onclick="filterSelection('COL')"> Colombiana</button>
+    <button class="btn" onclick="filterSelection('ITA')"> Italiana</button>
+    <button class="btn" onclick="filterSelection('RAP')"> Comida Rapida</button>
+    <button class="btn" onclick="filterSelection('ALT')"> Otros</button>
+</div>
+
+<section id="searchSection" class="products">
+    {% for restaurante in restaurantes%}
+    <div class="product-card {{restaurante.tipo}}">
+	<div class="product-image">
+            <a href="/products/restaurantes/{{restaurante.id}}">
+		<img src="{{restaurante.img_url}}" alt="Product Image">
+	    </a>
+	</div>
+	<div>
+	    <div class="product-info">
+		<h5>{{restaurante.nombre}}</h5>
+		<h6>{{restaurante.tipo}}</h6>
+	    </div>
+	</div>
+    </div>
+    {% endfor%}
+    {%endif%}
+</section>
+</div>
+
+<!-- ################################################### -->
+
+<script>
+
+    function searchingFunc() {
+        // Declare variables
+        var input, filter, i, section, div, h5, textValue;
+        input = document.getElementById('searchInput');
+        filter = input.value.toUpperCase();
+        section = document.getElementById("searchSection");
+        div = document.getElementsByClassName("product-card");
+
+        // My version
+        for (i = 0; i < div.length; i++) {
+            h5 = div[i].getElementsByTagName("h5")[0];
+            textValue = h5.textContent || h5.innerText;
+            if (textValue.toUpperCase().indexOf(filter) > -1) {
+                div[i].style.display = "";
+                // Add class show so it can be shown
+                w3AddClass(div[i], "show");
+            } else {
+                div[i].style.display = "none";
+                // Remove class shown so it can not be shown
+                w3RemoveClass(div[i], "show");
+            }
+        }
+    }
+
+    activeButton("{{tipo}}");
+    function filterSelection(c) {
+	    var x, i;
+            var div;
+	    //x = document.getElementsByClassName("product-card");
+	    //x = document.getElementsByClassName("filterDiv");
+	    div = document.getElementsByClassName("product-card");
+	    if (c == "all") c = "";
+	       //Add the "show" class (display:block) to the filtered elements, and remove the "show" class from the elements that are not selected
+	    // for (i = 0; i < x.length; i++) {
+	    //     w3RemoveClass(x[i], "show");
+	    //     if (x[i].className.indexOf(c) > -1) w3AddClass(x[i], "show");
+	    // }
+	    for (i = 0; i < div.length; i++) {
+                w3RemoveClass(div[i], "show");
+                if (div[i].className.indexOf(c) > -1) w3AddClass(div[i], "show");
+            }
+	}
+    function activeButton(filter){
+            filterSelection(filter);
+            var btnContainer = document.getElementById("myBtnContainer");
+            var btns = btnContainer.getElementsByClassName("btn");
+            if(filter == "all")
+                w3AddClass(btns[0],"active");
+            if(filter == "H")
+                w3AddClass(btns[1],"active");
+            if(filter == "M")
+                w3AddClass(btns[2],"active");
+        }
+
+    // Show filtered elements
+    function w3AddClass(element, name) {
+	    var i, arr1, arr2;
+	    arr1 = element.className.split(" ");
+	    arr2 = name.split(" ");
+	    for (i = 0; i < arr2.length; i++) {
+		    if (arr1.indexOf(arr2[i]) == -1) {
+			    element.className += " " + arr2[i];
+			}
+		}
+	}
+
+    // Hide elements that are not selected
+    function w3RemoveClass(element, name) {
+	    var i, arr1, arr2;
+	    arr1 = element.className.split(" ");
+	    arr2 = name.split(" ");
+	    for (i = 0; i < arr2.length; i++) {
+		    while (arr1.indexOf(arr2[i]) > -1) {
+			    arr1.splice(arr1.indexOf(arr2[i]), 1);
+			}
+		}
+	    element.className = arr1.join(" ");
+	}
+
+    // Add active class to the current control button (highlight it)
+    var btnContainer = document.getElementById("myBtnContainer");
+    var btns = btnContainer.getElementsByClassName("btn");
+    for (let i = 0; i < btns.length; i++) {
+        btns[i].addEventListener("click", function() {
+            var current = document.getElementsByClassName("active");
+            w3RemoveClass(current[0],"active");
+            this.className += " active";
+        });
+    }
+</script>
+{% endblock %}
