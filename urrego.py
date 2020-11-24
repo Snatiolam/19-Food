@@ -353,7 +353,7 @@ def admin_pro():
                     return redirect(url_for('admin_pro'))
                 except:
                     return render_template('admin/productos.html',productos = prod, rest = restaurantes, 
-                    count = count, error = "No se pudo agregar el producto!")
+                    count = count, mensaje = "No se pudo agregar el producto!")
 
             except:
                 return redirect(url_for('error'))
