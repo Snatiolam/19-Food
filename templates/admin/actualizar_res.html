@@ -170,9 +170,9 @@
 	}
 </style>
 <div id="wrapper">
-	<a href="{{url_for('consola_admin')}}" style="text-decoration: none;">
+	<a href="{{url_for('admin_res')}}" style="text-decoration: none;">
 		<h5 style="float: left;  margin: 10px; padding-left:15px; font-size: 18px;">
-			<i class="fas fa-arrow-left"></i> Volver a la Consola De Administrador
+			<i class="fas fa-arrow-left"></i> Volver a la consola de restaurante
 		</h5>
 	</a>
 	<header style="padding-top: 30px;">
@@ -207,11 +207,11 @@
 		<input style="padding: 5px; margin-top: 4px; width: 500px;" type="text" name="url_img" id="url_img"
 			placeholder="Url de la imagen del restaurante" value="{{rest.img_url}}" required>
 		<br>
-		<h4>Horario de apertura:</h4>
+		<h4>Horario de apertura: </h4>
 		<input style="padding: 5px; margin-top: 4px; width: 500px;" type="time" name="apertura" id="precio"
 			placeholder="Horario en el que abren sus puertas" value="{{rest.hor_abierto}}" required>
 		<br>
-		<h4>Horario de cierre:</h4>
+		<h4>Horario de cierre: </h4>
 		<input style="padding: 5px; margin-top: 4px; width: 500px;" type="time" name="cierre" id="descrip"
 			placeholder="Horario en el que cierran sus puertas" value="{{rest.hor_cierre}}" required>
 		<br>

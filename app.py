@@ -36,6 +36,7 @@ class Restaurantes(db.Model):
 
 class Productos(db.Model):
     id = db.Column(db.Integer, primary_key=True)
+    id_user = db.Column(db.Integer, db.ForeignKey('usuarios.id'), nullable=False)
     id_res = db.Column(db.Integer, db.ForeignKey('restaurantes.id'), nullable=False)
     img_url = db.Column(db.String(255), nullable=False)
     nombre = db.Column(db.String(200), nullable=False)
@@ -369,7 +370,48 @@ def admin_borrar_res(id):
         return redirect(url_for('home'))
 
 
+@app.route('/consola/admin/productos', methods=['GET', 'POST'])
+@login_required
+def admin_pro():
+    if current_user.is_admin:
+        productos = db.engine.execute(f'SELECT * FROM Productos WHERE id_user = {current_user.id}')
+        count_pro = 0
+        for pro in productos:
+            count_pro = count_pro + 1
+        productos = db.engine.execute(f'SELECT * FROM Productos WHERE id_user = {current_user.id}')
 
+        res = db.engine.execute(f'SELECT id,nombre FROM Restaurantes WHERE id_user = {current_user.id}')
+        count_res = 0
+        restaurantes = []
+        for query in res:
+            count_res = count_res + 1
+            restaurantes.append(query)
+
+        count = [count_pro,count_res]
+        if request.method == 'POST':
+            try:
+                nombre = request.form['nombre']
+                url_img = request.form['url_img']
+                precio = request.form['precio']
+                descrip = request.form['descrip']
+                resta = request.form['admin']
+                producto = Productos(id_user = current_user.id, id_res = resta ,img_url = url_img, 
+                nombre = nombre, precio = precio, descripcion = descrip)
+
+                try:
+                    db.session.add(producto)
+                    db.session.commit()
+                    return redirect(url_for('admin_pro'))
+                except:
+                    return render_template('admin/productos.html',productos = productos, rest = restaurantes, 
+                    count = count, error = "No se pudo agregar el producto!")
+
+            except:
+                return redirect(url_for('error'))
+        else:
+            return render_template('admin/productos.html',productos = productos ,rest = restaurantes, count = count)
+    else:
+        return redirect(url_for('home'))
 
 
 if __name__ == "__main__":

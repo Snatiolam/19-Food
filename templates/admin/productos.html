@@ -3,6 +3,50 @@
 
 
 <style>
+
+
+.select-css {
+ display: block;
+ font-size: 16px;
+ font-family: 'Arial', sans-serif;
+ font-weight: 400;
+ color: #444;
+ line-height: 1.3;
+ padding: .4em 1.4em .3em .8em;
+ width: 400px;
+ max-width: 100%; 
+ box-sizing: border-box;
+ margin: 0;
+ border: 1px solid #aaa;
+ box-shadow: 0 1px 0 1px rgba(0,0,0,.03);
+ border-radius: .3em;
+ -moz-appearance: none;
+ -webkit-appearance: none;
+ appearance: none;
+ background-color: #fff;
+ background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23007CB2%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E'),
+   linear-gradient(to bottom, #ffffff 0%,#f7f7f7 100%);
+ background-repeat: no-repeat, repeat;
+ background-position: right .7em top 50%, 0 0;
+ background-size: .65em auto, 100%;
+}
+.select-css::-ms-expand {
+ display: none;
+}
+.select-css:hover {
+ border-color: #888;
+}
+.select-css:focus {
+ border-color: #aaa;
+ box-shadow: 0 0 1px 3px rgba(59, 153, 252, .7);
+ box-shadow: 0 0 0 3px -moz-mac-focusring;
+ color: #222; 
+ outline: none;
+}
+.select-css option {
+ font-weight:normal;
+}
+
 	@media (max-width: 600px) {
 		form>div {
 			margin: 0 0 15px 0;
@@ -176,10 +220,11 @@
 		</h5>
 	</a>
 	<header style="padding-top: 30px;">
-		<h1>Manejo y Gestión de Restaurantes</h1>
-		<p>Aquí podra ver toda la información contenida en los restaurantes que hayas creado
+		<h1>Manejo y Gestión de Productos</h1>
+		<p>Aquí podra ver toda la información contenida de los platillos de los restaurantes que tengas creados
 			<br>
-			Si desea crear un nuevo restaurante por favor dirigase a la parte de abajo de la página.
+			Si desea crear un nuevo platillo dirigase al formulario que esta más abajo <br>
+			O utilice la casilla esconder los productos
 			<br>
 		</p>
 		<!--<form>
@@ -188,108 +233,86 @@
 		</form>-->
 		<div class="checkbox-div">
 			<input type="checkbox" id="hide">
-			<label for="hide">Esconde Todos Los Restaurantes</label>
+			<label for="hide">Esconde Todos Los Productos</label>
 		</div>
 
 	</header>
 	<ul id="movie-list">
-		{% if count < 1 %}
+		{% if count[0] < 1 %}
 		<li>
 			<span class="title">No tienes productos! Crea algunos abajo!</span>
 		</li>
 		{% else %}
-		{% for res in rest %}
+		{% for pro in productos %}
 		<li>
 			<span class="title">
-				ID Restaurante: {{res[0]}}
+				ID Producto: {{pro[0]}}
                 <br>
-                User ID: {{res[1]}}
+                User ID: {{pro[1]}}
                 <br>
-				Nombre: {{res[4]}}
+				Restaurante ID: {{pro[2]}}
 				<br>
-				URL imágen: {{res[2][0:60]}} ...
+				URL imágen: {{pro[3][0:60]}} ...
 				<br>
-				Descripción: {{res[5]}}
+				Descripción: {{pro[6]}}
 				<br>
-				Horario de abertura: {{res[6]}}
+				Nombre: {{pro[4]}}
 				<br>
-				Horario de cierre: {{res[7]}}
-				<br>
-				Cantidad de personas que pueden estar: {{res[8]}}
-				<br>
-				Tipo de comida: {{res[3]}}
+				Precio : {{pro[5]}}
 				
 			</span>
-			<a style="text-decoration: none;" href="/consola/admin/restaurantes/update/{{res[0]}}"><span
+			<a style="text-decoration: none;" href="/consola/admin/restaurantes/update/{{pro[0]}}"><span
 					class="delete">Actualizar</span></a>
-			<a style="text-decoration: none;" href="/consola/admin/restaurantes/delete/{{res[0]}}"><span
+			<a style="text-decoration: none;" href="/consola/admin/restaurantes/delete/{{pro[0]}}"><span
 					class="delete" style="margin-left: 5px; ">Borrar</span></a>
 		</li>
 		{% endfor %}
 		{% endif %}
 	</ul>
+	{% if count[1] < 1 %}
 	<form action="" method="POST" id="add-movie">
 
-		<h1>Añadir un nuevo restaurante</h1>
-		<p>Los campos de texto son necesarios para llenar la información valiosa<br></p>
-		{% if mensaje != ""%}
-		<h3 style="color: RED;">{{mensaje}}</h3>
-		{% endif %}
-		<h4>Nombre del restaurante: </h4>
-		<input style="padding: 5px; margin-top: 4px; width: 500px;" type="text" name="nombre" id="nombre"
-			placeholder="Nombre del restaurante" required>
-		<br>
-		<h4>URL de la imágen corporativa: </h4>
-		<input style="padding: 5px; margin-top: 4px; width: 500px;" type="text" name="url_img" id="url_img"
-			placeholder="Url de la imagen del restaurante" required>
-		<br>
-		<h4>Horario de apertura:</h4>
-		<input style="padding: 5px; margin-top: 4px; width: 500px;" type="time" name="apertura" id="precio"
-			placeholder="Horario en el que abren sus puertas" required>
-		<br>
-		<h4>Horario de cierre:</h4>
-		<input style="padding: 5px; margin-top: 4px; width: 500px;" type="time" name="cierre" id="descrip"
-			placeholder="Horario en el que cierran sus puertas" required>
-		<br>
-		<h4>Cantidad de personas que pueden recibir por día:</h4>
-		<input style="padding: 5px; margin-top: 4px; width: 500px;" type="number" min="0" name="personas" id="stock"
-			placeholder="Cantidad de personas que pueden ingresar" required>
-		<br>
-		<h4>Descripción:</h4>
-		<input style="padding: 5px; margin-top: 4px; width: 500px;" type="text" name="descrip" id="descuento"
-			placeholder="Descripción del restaurante" required>
-		<br>
-		<!--<h4>Cantidad en Inventario:</h4>
-		<input style="padding: 5px; margin-top: 4px; width: 500px;" type="text" name="inventario" id="inventario"
-			placeholder="Cantidad que se pondra en Inventario" required>-->
-		<h4>Tipo de comida (especializada!) que sirven:</h4>
-		<fieldset>
+		<h1>No tienes restaurantes creados!</h1>
+		<p>Crea alguno para que puedas añadir productos y relacionarlos<br></p>
+	{% else %}
+		<form action="" method="POST" id="add-movie">
 
-			<input name="Field5" id="rojo" type="radio" value="MEX" tabindex="8">
-			<label class="choice" for="Field6">Mexicana</label>
+			<h1>Añadir un nuevo platillo exquisito!</h1>
+			<p>Los campos de texto son necesarios para llenar la información valiosa<br></p>
+			{% if mensaje != ""%}
+			<h3 style="color: RED;">{{mensaje}}</h3>
+			{% endif %}
+			<h4>Nombre del producto: </h4>
+			<input style="padding: 5px; margin-top: 4px; width: 500px;" type="text" name="nombre" id="nombre"
+				placeholder="Nombre del producto" required>
+			<br>
+			<h4>URL de la imágen del producto: </h4>
+			<input style="padding: 5px; margin-top: 4px; width: 500px;" type="text" name="url_img" id="url_img"
+				placeholder="Url de la imagen del producto" required>
+			<br>
+			<h4>Precio del platillo:</h4>
+			<input style="padding: 5px; margin-top: 4px; width: 500px;" type="number" name="precio" id="precio"
+				placeholder="Precio del platillo" required>
+			<br>
+			<h4>Descripción:</h4>
+			<input style="padding: 5px; margin-top: 4px; width: 500px;" type="text" name="descrip" id="descuento"
+				placeholder="Descripción del platillo" required>
+			<br>
 
-			<input name="Field5" id="azul" type="radio" value="PER" tabindex="9">
-			<label class="choice" for="Field7">Peruana</label>
-
-			<input name="Field5" id="verde" type="radio" value="COL" tabindex="10">
-            <label class="choice" for="Field8">Colombiana</label>
-            
-            <input name="Field5" id="blanco" type="radio" value="ITA" tabindex="10">
-			<label class="choice" for="Field8">Italiana</label>
-
-			<input name="Field5" id="negro" type="radio" value="RAP" tabindex="10">
-			<label class="choice" for="Field8">Comida Rápida</label>
-            <br>
-            <input name="Field5" id="negro" type="radio" value="ALT" tabindex="11">
-			<label class="choice" for="Field9">Otro tipo de comida</label>
-            
-		</fieldset>
+			<h4>De cual restaurante es este platillo:</h4>
+			<select class="select-css" id="admin" name="admin" style="margin-bottom: 20px; margin-top: 20px; margin-left: 55px;" required>
+				<option value="">Seleccione Un Restaurante</option>
+				{% for res in rest %}
+				<option value="{{res[0]}}">{{res[1]}}</option>
+				{% endfor %}
+			</select>
 
 
-		<br>
-		<input type="submit" value="Agrega un restaurante" style="padding: 5px; margin-top: 4px;">
-	</form>
-
+			<br>
+			<input type="submit" value="Agrega un restaurante" style="padding: 5px; margin-top: 4px;">
+		
+	{% endif %}
+		</form>
 </div>
 
 

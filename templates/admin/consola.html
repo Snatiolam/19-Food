@@ -339,15 +339,17 @@ transform: translateX(-170px);">
             </div>
           </a>
         </div>
-        <div class="col-md-4">
-            <div class="box">
-              <i class="fa fa-file fa-fw danger"></i>
-              <div class="info">
-                <h3>En construcción</h3>
-                <p>Futuro modulo de admin</p>
+        <a href="{{url_for('admin_pro')}}" style="text-decoration: none;">
+          <div class="col-md-4">
+              <div class="box">
+                <i class="fa fa-file fa-fw danger"></i>
+                <div class="info">
+                  <h3>Productos</h3>
+                  <p>Gestione los productos</p>
+                </div>
               </div>
-            </div>
-        </div>
+          </div>
+        </a>
         <div class="col-md-4">
           <a href="{{url_for('admin_res')}}" style="text-decoration: none;">
             <div class="box">
