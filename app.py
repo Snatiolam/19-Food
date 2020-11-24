@@ -175,6 +175,7 @@ def productos():
 @app.route("/products", methods=['GET', 'POST'])
 def product():
     tipo = "all"
+    query = db.engine.execute(f'SELECT tipo,hor_abierto,hor_cierre FROM Restaurantes WHERE id = {pro.id_res}')
     if request.method == 'POST':
         tipo = request.form.get("tipo")
     productos = Productos.query.order_by(Productos.id).all()
