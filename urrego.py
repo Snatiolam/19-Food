@@ -152,27 +152,6 @@ def logout():
     logout_user()
     return redirect(url_for('login'))
 
-@app.route("/productos", methods=['GET', 'POST'])
-def productos():
-    if request.method == 'POST':
-        
-        name = request.form['nombre']
-        url = request.form['url']
-        content = request.form['content']
-        price = request.form['price']
-        new_task = Productos(nombre = name,img_url=url, precio = price, descripcion = content)
-
-        try:
-            db.session.add(new_task)
-            db.session.commit()
-            return redirect('/productos')
-        except:
-            return 'No se pudo poner el producto'
-
-    else:
-        productos = Productos.query.order_by(Productos.id).all()
-        return render_template('maestra_pro.html', productos=productos)
-
 @app.route("/products", methods=['GET', 'POST'])
 def product():
     tipo = "all"
