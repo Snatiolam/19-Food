@@ -21,8 +21,10 @@ login_manager.init_app(app)
 login_manager.login_view = 'login'
 
 '''
+
 Creacion de todas las clases correspondientes al manejo de
 la base de datos. (Modelo)
+
 '''
 
 class Restaurantes(db.Model):
@@ -77,15 +79,17 @@ class Reserva(db.Model):
     num_personas = db.Column(db.Integer, nullable=False)
     fecha = db.Column(db.String(200), nullable=False)
 
-'''
-Creacion de todas las rutas con sus respectivos
-funciones (Controladores)
-'''
 
 @login_manager.user_loader
 def load_user(user_id):
     return Usuarios.query.get(int(user_id))
 
+
+'''
+
+Clases que se encargan de gestionar operaciones con autenticacion y registro
+
+'''
 
 class LoginForm(FlaskForm):
     username = StringField('username', validators=[InputRequired(), Length(min=4, max=15)])
@@ -98,6 +102,12 @@ class RegisterForm(FlaskForm):
     username = StringField('username', validators=[InputRequired(), Length(min=4, max=15)])
     password = PasswordField('password', validators=[InputRequired(), Length(min=8, max=80)])
 
+'''
+
+Creacion de todas las rutas con sus respectivos
+funciones (Controladores)
+
+'''
 
 #La ruta de acceso primaria principal
 @app.route("/")
@@ -124,9 +134,9 @@ def login():
         return render_template('login.html', form=form, error = "")
     else:
         return redirect(url_for('home'))  
-   #  return render_template('login.html')
 
 
+# Ruta de error
 @app.route('/error')
 def error():
     return render_template('error.html')
@@ -165,7 +175,6 @@ def registro():
         return render_template('register.html', form=form , error="")
     else:
         return redirect(url_for('home')) 
-    #return render_template("register.html")
 
 #Ya se puede desloguear sin ningun problema 
 @app.route('/logout')
@@ -183,11 +192,8 @@ def product():
     for pro in productos:
         query = db.engine.execute(f'SELECT img_url,tipo,nombre FROM Restaurantes WHERE id = {pro.id_res}')
         for row in query:
-             #{% for arr in arr%}
-             #{% if arr[0] ==  pro.id %}
-             #    arr[1] y arr[2]
-             #{% endif %}
-            arr.append([row[0],row[1],row[2]])
+            #           img_url, tipo, nombre
+            arr.append([row[0], row[1], row[2]])
     return render_template('productos.html', productos=productos, tipo=tipo, arr = arr)
 
 
