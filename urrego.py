@@ -426,6 +426,17 @@ def admin_borrar_pro(id):
 
 
 
+@app.route('/restaurante/producto/vista_compra/<int:id>', methods=['GET', 'POST'])
+@login_required
+def vista_producto(id):
+    pro = Productos.query.get_or_404(id)
+    if request.method == 'POST':
+        pass
+    else:
+        return render_template("/carrito/vista_producto.html" , producto = pro)
+
+
+
 if __name__ == "__main__":
     hashed_password = generate_password_hash("12345678", method='sha256')
     new_user = Usuarios(username="admin", email="admon.sojas@gmail.com",
