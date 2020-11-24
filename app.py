@@ -27,8 +27,12 @@ class Restaurantes(db.Model):
     tipo = db.Column(db.String(200), nullable=False) #Generar una tabla en el futuro
     nombre = db.Column(db.String(200), nullable=False)
     descripcion = db.Column(db.String(200), nullable=True)
+    hor_abierto = db.Column(db.String(200), nullable=False)
+    hor_cierre = db.Column(db.String(200), nullable=False)
+    personas = db.Column(db.Integer, nullable=False)
 
-#Anadir campo de texto donde se pueda anadir la imagen del producto
+
+#Añadir campo de texto donde se pueda anadir la imagen del producto
 
 class Productos(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -59,10 +63,16 @@ class RegisterForm(FlaskForm):
     username = StringField('username', validators=[InputRequired(), Length(min=4, max=15)])
     password = PasswordField('password', validators=[InputRequired(), Length(min=8, max=80)])
 
+
+
+
+#La ruta de acceso primaria principal
 @app.route("/")
 def home():
     return render_template("home.html")
 
+
+#El formulario de login completo, verificado
 @app.route("/login", methods=['GET', 'POST'])
 def login():
     if current_user.is_authenticated == False:
@@ -87,6 +97,8 @@ def login():
 def error():
     return render_template('error.html')
 
+
+#Registro completado ya se puede decidir si ser admin o no 
 @app.route("/register", methods=['GET', 'POST'])
 def registro():
     if current_user.is_authenticated == False:
@@ -95,15 +107,25 @@ def registro():
         if form.validate_on_submit():
             try:
                 hashed_password = generate_password_hash(form.password.data, method='sha256')
-                new_user = Usuarios(username=form.username.data, email=form.email.data, password=hashed_password)
-                comp_user = Usuarios.query.filter_by(username=form.username.data).first()
-                comp_email = Usuarios.query.filter_by(email=form.email.data).first()
-                if comp_user is not None or comp_email is not None:
-                    return render_template('register.html', form=form, error="El usuario o correo ya esta registrado! \n Ingrese uno diferente!")
+                admin = request.form['admin']
+                if admin != 'No':
+                    is_admin =  True
+                    if admin == "res":
+                        pass
+                    else:
+                        is_admin = False
+                    new_user = Usuarios(username=form.username.data, email=form.email.data, password=hashed_password, is_admin = is_admin)
+                    comp_user = Usuarios.query.filter_by(username=form.username.data).first()
+                    comp_email = Usuarios.query.filter_by(email=form.email.data).first()
+                
+                    if comp_user is not None or comp_email is not None:
+                        return render_template('register.html', form=form, error="El usuario o correo ya esta registrado! \n Ingrese uno diferente!")
+                    else:
+                        db.session.add(new_user)
+                        db.session.commit()
+                        return redirect(url_for('home'))
                 else:
-                    db.session.add(new_user)
-                    db.session.commit()
-                    return redirect(url_for('home'))
+                    return render_template('register.html', form=form, error="No puede dejar la casilla de selección vacía!!")
             except:
                 return redirect(url_for('error'))    
         return render_template('register.html', form=form , error="")
@@ -111,11 +133,15 @@ def registro():
         return redirect(url_for('home')) 
     #return render_template("register.html")
 
+
+#Ya se puede desloguear sin ningun problema 
 @app.route('/logout')
 @login_required
 def logout():
     logout_user()
     return redirect(url_for('login'))
+
+
 
 @app.route("/productos", methods=['GET', 'POST'])
 def productos():
@@ -223,6 +249,121 @@ def update_res(id):
 
     else:
         return render_template('update_res.html', res=res)
+
+
+#
+#
+#   Se viene bloque de codigo de todas las funcionalidades y rutas que tiene el admin
+#   
+#
+
+
+@app.route('/consola/admin')
+@login_required
+def consola_admin():
+    if current_user.is_admin:
+        return render_template('admin/consola.html')
+    else:
+        return redirect(url_for('home'))
+
+
+#Completada!
+@app.route('/consola/admin/restaurantes', methods=['GET', 'POST'])
+@login_required
+def admin_res():
+    if current_user.is_admin:
+        restau = db.engine.execute(f'SELECT * FROM Restaurantes WHERE id_user = {current_user.id}')
+        query = db.engine.execute(f'SELECT COUNT(*) FROM Restaurantes WHERE id_user = {current_user.id}')
+        count = 0
+        for q in query:
+            count = q[0]
+        restaurantes = []
+        for res in restau:
+            resta = [res[0],res[1],res[2],res[3],res[4],res[5],res[6],res[7],res[8]]
+            restaurantes.append(resta)
+        
+        if request.method == 'POST':
+            try:
+                name = request.form['nombre']
+                url_img = request.form['url_img']
+                apertura = request.form['apertura']
+                cierre = request.form['cierre']
+                personas = int(request.form['personas'])
+                descrip = request.form['descrip']
+                tipo = request.form['Field5']
+                res = Restaurantes(id_user = current_user.id, img_url = url_img, hor_abierto = apertura, hor_cierre = cierre,
+                personas = personas, descripcion = descrip, tipo = tipo , nombre = name)
+                try:
+                    db.session.add(res)
+                    db.session.commit()
+                    return redirect(url_for('admin_res'))
+                except:
+                    return render_template('admin/restaurantes.html', rest = restaurantes, 
+                    count = count, error = "No se pudo agregar el producto!")
+
+            except:
+                return redirect(url_for('error'))
+        else:
+            return render_template('admin/restaurantes.html', rest = restaurantes, count = count)
+    else:
+        return redirect(url_for('home'))
+
+#Completada
+@app.route('/consola/admin/restaurantes/update/<int:id>', methods=['GET', 'POST'])
+@login_required
+def admin_actualizar_res(id):
+    if current_user.is_admin:
+        user = db.engine.execute(f'SELECT COUNT(*) FROM Restaurantes WHERE id_user = {current_user.id}')
+        for us in user:
+            if us[0] == 0:
+                return "Usted no tiene acceso a ese producto! Pillin"
+        
+
+        rest = Restaurantes.query.get_or_404(id)
+        if  request.method == 'POST':
+            rest.nombre = request.form['nombre']
+            rest.img_url = request.form['url_img']
+            rest.hor_abierto = request.form['apertura']
+            rest.hor_cierre = request.form['cierre']
+            rest.personas = int(request.form['personas'])
+            rest.descripcion = request.form['descrip']
+            rest.tipo = request.form['Field5']
+            try:
+                db.session.commit()
+                return redirect(url_for('admin_res'))
+            except:
+                return redirect(url_for('error'))
+        else:
+            return render_template('/admin/actualizar_res.html',rest = rest)
+
+    else:
+        return redirect(url_for('home'))
+
+
+#Completada!
+@app.route('/consola/admin/restaurantes/delete/<int:id>', methods=['GET', 'POST'])
+@login_required
+def admin_borrar_res(id):
+    if current_user.is_admin:
+        user = db.engine.execute(f'SELECT COUNT(*) FROM Restaurantes WHERE id_user = {current_user.id}')
+        for us in user:
+            if us[0] == 0:
+                return "Usted no tiene acceso a ese producto! Pillin"
+        
+        element_to_delete = Restaurantes.query.get_or_404(id)
+        try:
+            db.session.delete(element_to_delete)
+            db.session.commit()
+            return redirect(url_for('admin_res'))
+        except:
+            return redirect(url_for('error'))
+            
+    else:
+        return redirect(url_for('home'))
+
+
+
+
 
 if __name__ == "__main__":
     hashed_password = generate_password_hash("12345678", method='sha256')
