@@ -175,11 +175,14 @@ def restaurants():
     restaurantes = Restaurantes.query.order_by(Restaurantes.id).all()
     return render_template('restaurantes.html', restaurantes=restaurantes, tipo=tipo)
 
-@app.route("/restaurantes/res/<int:id>", methods=['GET', 'POST'])
+@app.route("/res/<int:id>", methods=['GET', 'POST'])
 def rest_prods(id):
     restaurante = Restaurantes.query.get_or_404(id)
-    productos = Productos.query.filter_by(id_res=restaurante.id).all()
-    return render_template('restaurante.html', restaurante=restaurante, productos=productos)
+    tipo = "all"
+    if request.method == 'POST':
+        tipo = request.form.get("tipo")
+    restaurantes = Restaurantes.query.order_by(Restaurantes.id).all()
+    return render_template('error.html', restaurante=restaurante, restaurantes=restaurantes, tipo=tipo)
 
 @app.route("/restaurante", methods=['GET', 'POST'])
 def restaurante():
@@ -201,63 +204,6 @@ def restaurante():
         res = Restaurantes.query.order_by(Restaurantes.id).all()
         mis_res = Restaurantes.query.filter_by(id_user=current_user.id).all()
         return render_template('maestra_res.html', res=res, mis_res=mis_res)
-
-@app.route('/delete/<int:id>')
-def delete_producto(id):
-    product_to_delete = Productos.query.get_or_404(id)
-
-    try:
-        db.session.delete(product_to_delete)
-        db.session.commit()
-        return redirect('/productos')
-    except:
-        return 'Tuvimos problemas eliminando el producto, intentelo de nuevo'
-
-@app.route('/update/<int:id>', methods=['GET', 'POST'])
-def update_producto(id):
-    productos = Productos.query.get_or_404(id)
-
-    if request.method == 'POST':
-        productos.nombre = request.form['nombre']
-        productos.descripcion = request.form['content']
-        productos.precio = request.form['price']
-        try:
-            db.session.commit()
-            return redirect('/productos')
-        except:
-            return 'Hubo problemas actualizando el producto'
-
-    else:
-        return render_template('update_pro.html', productos=productos)
-
-@app.route('/delete/res/<int:id>')
-def delete_res(id):
-    res_to_delete = Restaurantes.query.get_or_404(id)
-
-    try:
-        db.session.delete(res_to_delete)
-        db.session.commit()
-        return redirect('/restaurante')
-    except:
-        return 'Tuvimos problemas eliminando el restaurante, intentelo de nuevo'
-
-@app.route('/update/res/<int:id>', methods=['GET', 'POST'])
-def update_res(id):
-    res = Restaurantes.query.get_or_404(id)
-
-    if request.method == 'POST':
-        res.nombre = request.form['nombre']
-        res.descripcion = request.form['descripcion']
-        res.tipo = request.form['tipo']
-        try:
-            db.session.commit()
-            return redirect('/restaurante')
-        except:
-            return 'Hubo problemas actualizando el Restaurante'
-
-    else:
-        return render_template('update_res.html', res=res)
-
 
 #
 #
@@ -307,7 +253,7 @@ def admin_res():
                     return redirect(url_for('admin_res'))
                 except:
                     return render_template('admin/restaurantes.html', rest = restaurantes, 
-                    count = count, error = "No se pudo agregar el producto!")
+                    count = count, error = "No se pudo agregar el restaurante!")
 
             except:
                 return redirect(url_for('error'))
@@ -321,7 +267,7 @@ def admin_res():
 @login_required
 def admin_actualizar_res(id):
     if current_user.is_admin:
-        user = db.engine.execute(f'SELECT COUNT(*) FROM Restaurantes WHERE id_user = {current_user.id}')
+        user = db.engine.execute(f'SELECT COUNT(*) FROM Restaurantes WHERE id_user = {current_user.id} and id = {id}')
         for us in user:
             if us[0] == 0:
                 return "Usted no tiene acceso a ese producto! Pillin"
@@ -348,12 +294,14 @@ def admin_actualizar_res(id):
         return redirect(url_for('home'))
 
 
+
+
 #Completada!
 @app.route('/consola/admin/restaurantes/delete/<int:id>', methods=['GET', 'POST'])
 @login_required
 def admin_borrar_res(id):
     if current_user.is_admin:
-        user = db.engine.execute(f'SELECT COUNT(*) FROM Restaurantes WHERE id_user = {current_user.id}')
+        user = db.engine.execute(f'SELECT COUNT(*) FROM Restaurantes WHERE id_user = {current_user.id} and {id}')
         for us in user:
             if us[0] == 0:
                 return "Usted no tiene acceso a ese producto! Pillin"
@@ -376,9 +324,10 @@ def admin_pro():
     if current_user.is_admin:
         productos = db.engine.execute(f'SELECT * FROM Productos WHERE id_user = {current_user.id}')
         count_pro = 0
+        prod = []
         for pro in productos:
+            prod.append(pro)
             count_pro = count_pro + 1
-        productos = db.engine.execute(f'SELECT * FROM Productos WHERE id_user = {current_user.id}')
 
         res = db.engine.execute(f'SELECT id,nombre FROM Restaurantes WHERE id_user = {current_user.id}')
         count_res = 0
@@ -403,15 +352,78 @@ def admin_pro():
                     db.session.commit()
                     return redirect(url_for('admin_pro'))
                 except:
-                    return render_template('admin/productos.html',productos = productos, rest = restaurantes, 
+                    return render_template('admin/productos.html',productos = prod, rest = restaurantes, 
                     count = count, error = "No se pudo agregar el producto!")
 
             except:
                 return redirect(url_for('error'))
         else:
-            return render_template('admin/productos.html',productos = productos ,rest = restaurantes, count = count)
+            return render_template('admin/productos.html',productos = prod ,rest = restaurantes, count = count)
     else:
         return redirect(url_for('home'))
+
+
+
+#Completada
+@app.route('/consola/admin/productos/update/<int:id>', methods=['GET', 'POST'])
+@login_required
+def admin_actualizar_pro(id):
+    if current_user.is_admin:
+        user = db.engine.execute(f'SELECT COUNT(*) FROM Productos WHERE id_user = {current_user.id} and id = {id}')
+        for us in user:
+            if us[0] == 0:
+                return "Usted no tiene acceso a ese producto! Pillin"
+        
+        res = db.engine.execute(f'SELECT id,nombre FROM Restaurantes WHERE id_user = {current_user.id}')
+        count_res = 0
+        restaurantes = []
+        for query in res:
+            count_res = count_res + 1
+            restaurantes.append(query)
+
+        pro = Productos.query.get_or_404(id)
+        if  request.method == 'POST':
+            pro.nombre = request.form['nombre']
+            pro.img_url = request.form['url_img']
+            pro.precio = request.form['precio']
+            pro.descripcion = request.form['descrip']
+            pro.id_res = request.form['admin']
+
+            try:
+                db.session.commit()
+                return redirect(url_for('admin_pro'))
+            except:
+                return redirect(url_for('error'))
+        else:
+            return render_template('/admin/actualizar_pro.html',pro = pro, rest = restaurantes)
+
+    else:
+        return redirect(url_for('home'))
+
+
+
+
+#Completada!
+@app.route('/consola/admin/productos/delete/<int:id>', methods=['GET', 'POST'])
+@login_required
+def admin_borrar_pro(id):
+    if current_user.is_admin:
+        user = db.engine.execute(f'SELECT COUNT(*) FROM Productos WHERE id_user = {current_user.id} and id = {id}')
+        for us in user:
+            if us[0] == 0:
+                return "Usted no tiene acceso a ese producto! Pillin"
+        
+        element_to_delete = Productos.query.get_or_404(id)
+        try:
+            db.session.delete(element_to_delete)
+            db.session.commit()
+            return redirect(url_for('admin_pro'))
+        except:
+            return redirect(url_for('error'))
+            
+    else:
+        return redirect(url_for('home'))
+
 
 
 if __name__ == "__main__":
