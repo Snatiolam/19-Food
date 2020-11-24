@@ -528,9 +528,9 @@ def del_carrito(id):
         return redirect(url_for('home'))
 
 
-
-
-
+@app.route('/quienes_somos', methods=['GET', 'POST'])
+def somos():
+    return render_template('somos.html')
 
 if __name__ == "__main__":
     hashed_password = generate_password_hash("12345678", method='sha256')
