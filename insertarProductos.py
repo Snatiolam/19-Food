@@ -23,7 +23,7 @@ else:
 ##########
 restaurante = Restaurantes.query.filter_by(nombre="Sabor Peru").first()
 
-nombre_prod = "Maricos ricos"
+nombre_prod = "Mariscos ricos"
 new_prod = Productos(id_user=restaurante.id_user,id_res=restaurante.id, img_url="https://dam.cocinafacil.com.mx/wp-content/uploads/2014/03/Parrillada-de-mariscos.jpg", nombre=nombre_prod, precio=24, descripcion="")
 comp_prod = Productos.query.filter_by(nombre=nombre_prod).first()
 

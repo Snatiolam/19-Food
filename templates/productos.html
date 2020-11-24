@@ -57,7 +57,7 @@
 
     .product-info {
 	margin-top: auto;
-	padding-top: 20px;
+	padding-top: 5px;
 	text-align: center;
     }
 
@@ -129,24 +129,34 @@
 <!-- Control buttons -->
 <div id="myBtnContainer" style="text-align: center;">
     <button class="btn" onclick="filterSelection('all')"> Todos</button>
-    <button class="btn" onclick="filterSelection('all')"> Mexicana</button>
-    <button class="btn" onclick="filterSelection('all')"> Rapida</button>
+    <button class="btn" onclick="filterSelection('MEX')"> Mexicana</button>
+    <button class="btn" onclick="filterSelection('PER')"> Peruana</button>
+    <button class="btn" onclick="filterSelection('COL')"> Colombiana</button>
+    <button class="btn" onclick="filterSelection('ITA')"> Italiana</button>
+    <button class="btn" onclick="filterSelection('RAP')"> Rapida</button>
+    <button class="btn" onclick="filterSelection('ALT')"> Otros</button>
 </div>
 
 <section id="searchSection" class="products">
     {% for producto in productos%}
-    <div class="product-card {{producto.tipo}}">
+    <div style="max-width:250px;" class="product-card {{ arr[producto.id - 1][1] }}">
 	<div class="product-image">
             <a href="/restaurante/producto/vista_compra/{{producto.id}}">
-		<img src="{{producto.img_url}}" alt="Product Image">
+		<img style="max-height:150px;" src="{{producto.img_url}}" alt="Product Image">
 	    </a>
 	</div>
+        <div>
+            <div style="width:50%;float:left;">
+            <img style="margin-top: auto; padding-top:25px;float:left;flex: 1 16%;flex-direction: column;max-width:70px;max-height:80px;" src="{{ arr[producto.id -1][0] }}" alt="Product Image">
+            </div>
 	<div>
-	    <div class="product-info">
-		<h5>{{ producto.nombre }}</h5>
-		<h6>${{ producto.precio }}</h6>
+	    <div style="float:right;width:50%;"class="product-info">
+                <h5><b>{{ producto.nombre }}</b></h5>
+		<h5>{{ arr[producto.id -1][2] }}</h5>
+		<h6 style="text-align:center;">${{ producto.precio }}</h6>
 	    </div>
 	</div>
+        </div>
     </div>
     {% endfor%}
     {%endif%}

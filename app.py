@@ -175,18 +175,16 @@ def productos():
 @app.route("/products", methods=['GET', 'POST'])
 def product():
     tipo = "all"
-    
-    
     productos = Productos.query.order_by(Productos.id).all()
     arr = []
     for pro in productos:
-        query = db.engine.execute(f'SELECT img_url,tipo FROM Restaurantes WHERE id = {pro.id_res}')
+        query = db.engine.execute(f'SELECT img_url,tipo,nombre FROM Restaurantes WHERE id = {pro.id_res}')
         for row in query:
             #{% for arr in arr%}
             #{% if arr[0] ==  pro.id %}
             #    arr[1] y arr[2]
             #{% endif %}
-            arr.append([pro.id,row[0],row[1]])
+            arr.append([row[0],row[1],row[2]])
 
 
     return render_template('productos.html', productos=productos, tipo=tipo, arr = arr)
