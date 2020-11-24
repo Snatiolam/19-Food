@@ -1,4 +1,4 @@
 from app import *
 
 db.create_all()
-import insertarCuentas, insertarRestaurantes
+import insertarCuentas, insertarRestaurantes, insertarProductos
