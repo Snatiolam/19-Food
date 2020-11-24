@@ -10,7 +10,6 @@ from datetime import datetime
 import random
 
 
-
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'Thisissupposedtobesecret!'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'
@@ -21,7 +20,10 @@ login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = 'login'
 
-#Anadir campo de texto donde se pueda anadir la imagen del restaurante
+'''
+Creacion de todas las clases correspondientes al manejo de
+la base de datos. (Modelo)
+'''
 
 class Restaurantes(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -34,18 +36,12 @@ class Restaurantes(db.Model):
     hor_cierre = db.Column(db.String(200), nullable=False)
     personas = db.Column(db.Integer, nullable=False)
 
-
-#Añadir campo de texto donde se pueda anadir la imagen del producto
-
-
 class Carrito(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     id_user = db.Column(db.Integer, db.ForeignKey('usuarios.id'), nullable=False)
     id_pro = db.Column(db.Integer, nullable=False)
     cantidad = db.Column(db.Integer, nullable=False)
     coste = db.Column(db.String(200), nullable=False)
-
-
 
 class Productos(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -63,7 +59,6 @@ class Usuarios(UserMixin, db.Model):
     is_admin = db.Column(db.Boolean(), default = False, nullable = False )
     password = db.Column(db.String(200), nullable=False) 
 
-
 class Registro(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     id_user = db.Column(db.Integer, db.ForeignKey('usuarios.id'), nullable=False)
@@ -74,7 +69,6 @@ class Registro(db.Model):
     tiempo = db.Column(db.String(200), nullable=False)
     entregado = db.Column(db.Boolean(), default = False, nullable = False )
 
-
 class Reserva(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     id_user = db.Column(db.Integer, db.ForeignKey('usuarios.id'), nullable=False)
@@ -83,6 +77,10 @@ class Reserva(db.Model):
     num_personas = db.Column(db.Integer, nullable=False)
     fecha = db.Column(db.String(200), nullable=False)
 
+'''
+Creacion de todas las rutas con sus respectivos
+funciones (Controladores)
+'''
 
 @login_manager.user_loader
 def load_user(user_id):
@@ -94,10 +92,12 @@ class LoginForm(FlaskForm):
     password = PasswordField('password', validators=[InputRequired(), Length(min=8, max=80)])
     remember = BooleanField('remember me')
 
+
 class RegisterForm(FlaskForm):
     email = StringField('email', validators=[InputRequired(), Email(message='Invalid email'), Length(max=50)])
     username = StringField('username', validators=[InputRequired(), Length(min=4, max=15)])
     password = PasswordField('password', validators=[InputRequired(), Length(min=8, max=80)])
+
 
 #La ruta de acceso primaria principal
 @app.route("/")
@@ -174,6 +174,7 @@ def logout():
     logout_user()
     return redirect(url_for('login'))
 
+
 @app.route("/products", methods=['GET', 'POST'])
 def product():
     tipo = "all"
@@ -189,6 +190,7 @@ def product():
             arr.append([row[0],row[1],row[2]])
     return render_template('productos.html', productos=productos, tipo=tipo, arr = arr)
 
+
 @app.route("/restaurantes", methods=['GET', 'POST'])
 def restaurants():
     tipo = "all"
@@ -197,11 +199,13 @@ def restaurants():
     restaurantes = Restaurantes.query.order_by(Restaurantes.id).all()
     return render_template('restaurantes.html', restaurantes=restaurantes, tipo=tipo)
 
+
 @app.route("/restaurantes/res/<int:id>", methods=['GET', 'POST'])
 def rest_prods(id):
     restaurante = Restaurantes.query.get_or_404(id)
     productos = Productos.query.filter_by(id_res=restaurante.id).all()
     return render_template('restaurante.html', restaurante=restaurante, productos=productos)
+
 
 @app.route("/restaurante", methods=['GET', 'POST'])
 def restaurante():
@@ -224,12 +228,11 @@ def restaurante():
         mis_res = Restaurantes.query.filter_by(id_user=current_user.id).all()
         return render_template('maestra_res.html', res=res, mis_res=mis_res)
 
-#
-#
-#   Se viene bloque de codigo de todas las funcionalidades y rutas que tiene el admin
-#   
-#
+'''
 
+Se viene bloque de codigo de todas las funcionalidades y rutas que tiene el admin
+
+'''
 
 @app.route('/consola/admin')
 @login_required
@@ -312,9 +315,6 @@ def admin_actualizar_res(id):
     else:
         return redirect(url_for('home'))
 
-
-
-
 #Completada!
 @app.route('/consola/admin/restaurantes/delete/<int:id>', methods=['GET', 'POST'])
 @login_required
@@ -335,7 +335,6 @@ def admin_borrar_res(id):
             
     else:
         return redirect(url_for('home'))
-
 
 @app.route('/consola/admin/productos', methods=['GET', 'POST'])
 @login_required
@@ -381,8 +380,6 @@ def admin_pro():
     else:
         return redirect(url_for('home'))
 
-
-
 #Completada
 @app.route('/consola/admin/productos/update/<int:id>', methods=['GET', 'POST'])
 @login_required
@@ -419,9 +416,6 @@ def admin_actualizar_pro(id):
     else:
         return redirect(url_for('home'))
 
-
-
-
 #Completada!
 @app.route('/consola/admin/productos/delete/<int:id>', methods=['GET', 'POST'])
 @login_required
@@ -442,8 +436,6 @@ def admin_borrar_pro(id):
             
     else:
         return redirect(url_for('home'))
-
-
 
 @app.route('/restaurante/producto/vista_compra/<int:id>', methods=['GET', 'POST'])
 def vista_producto(id):
@@ -483,8 +475,6 @@ def vista_producto(id):
             return render_template("/carrito/vista_producto.html" , producto = pro, tipo = tipo, mess = "",horas = horas)    
     else:
         return render_template("/carrito/vista_producto.html" , producto = pro, tipo = tipo, mess = "El restaurante esta cerrado de momento",horas = horas)    
-    
-
 
 @app.route('/restaurante/producto/carrito', methods=['GET', 'POST'])
 @login_required
@@ -506,8 +496,6 @@ def carrito():
     else:
         return redirect(url_for('home'))
 
-
-
 @app.route('/restaurante/producto/carrito/del/<int:id>', methods=['GET', 'POST'])
 @login_required
 def del_carrito(id):
@@ -528,10 +516,6 @@ def del_carrito(id):
 
     else:
         return redirect(url_for('home'))
-
-
-
-
 
 @app.route('/restaurante/producto/carrito/tarjeta', methods=['GET', 'POST'])
 @login_required
@@ -560,8 +544,6 @@ def tarjeta():
             return render_template('/carrito/tarjeta.html', rand = rand)
     else:
         return redirect(url_for('home'))
-
-
 
 
 @app.route('/restaurante/producto/carrito/efectivo', methods=['GET', 'POST'])
@@ -593,10 +575,6 @@ def efectivo():
         return redirect(url_for('home'))
 
 
-
-
-
-
 @app.route('/consola/usuario', methods=['GET', 'POST'])
 @login_required
 def consola_usuario():
@@ -609,7 +587,6 @@ def consola_usuario():
 @app.route('/quienes_somos', methods=['GET', 'POST'])
 def somos():
     return render_template('somos.html')
-
 
 
 @app.route('/consola/admin/pedidos')
@@ -625,11 +602,9 @@ def admin_pedidos():
                 productos.append(product)
                 count = count + 1
 
-    
         return render_template('admin/pedidos.html', count = count, productos = productos)
     else:
         return redirect(url_for('home'))
-
 
 
 @app.route('/consola/admin/pedidos/update/estado/<int:id>')
