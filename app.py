@@ -80,7 +80,8 @@ class RegisterForm(FlaskForm):
 #La ruta de acceso primaria principal
 @app.route("/")
 def home():
-    return render_template("home.html")
+    productos = Productos.query.order_by(Productos.id).all()
+    return render_template("home.html", productos = productos)
 
 
 #El formulario de login completo, verificado

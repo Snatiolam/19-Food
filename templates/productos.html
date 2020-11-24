@@ -139,7 +139,7 @@
 
 <section id="searchSection" class="products">
     {% for producto in productos%}
-    <div style="max-width:250px;" class="product-card {{ arr[producto.id - 1][1] }}">
+    <div style="max-width:250px;" class="product-card {{ arr[producto.id -1][1] }}">
 	<div class="product-image">
             <a href="/restaurante/producto/vista_compra/{{producto.id}}">
 		<img style="max-height:150px;" src="{{producto.img_url}}" alt="Product Image">
@@ -147,12 +147,12 @@
 	</div>
         <div>
             <div style="width:50%;float:left;">
-            <img style="margin-top: auto; padding-top:25px;float:left;flex: 1 16%;flex-direction: column;max-width:70px;max-height:80px;" src="{{ arr[producto.id -1][0] }}" alt="Product Image">
+            <img style="margin-top: auto; padding-top:25px;float:left;flex: 1 16%;flex-direction: column;max-width:70px;max-height:80px;" src="{{ arr[producto.id - 1][0] }}" alt="Product Image">
             </div>
 	<div>
 	    <div style="float:right;width:50%;"class="product-info">
                 <h5><b>{{ producto.nombre }}</b></h5>
-		<h5>{{ arr[producto.id -1][2] }}</h5>
+		<h5>{{ arr[producto.id - 1][2] }}</h5>
 		<h6 style="text-align:center;">${{ producto.precio }}</h6>
 	    </div>
 	</div>
