@@ -179,9 +179,9 @@
             {% endif %}
             <span style="height:auto;margin:0px;">Horario: {{ restaurante.hor_abierto }} - {{ restaurante.hor_cierre }}</span>
             <div style="height:auto;margin:0px;"><p>{{ restaurante.descripcion }}</p></div>
-            <form>
-                <button class="button-reserva" style="vertical-align:middle height:auto;margin:0px;"><span>Reserva </span></button>
-            </form>
+            
+            <a href="/reserva/{{restaurante.id}}"><button class="button-reserva" style="vertical-align:middle; height:auto;margin:0px;"><span>Reserva </span></button></a>
+            
         </div>
     </div>
     <hr>

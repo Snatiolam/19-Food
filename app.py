@@ -75,9 +75,19 @@ class Registro(db.Model):
     entregado = db.Column(db.Boolean(), default = False, nullable = False )
 
 
+class Reserva(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    id_user = db.Column(db.Integer, db.ForeignKey('usuarios.id'), nullable=False)
+    id_res = db.Column(db.Integer, db.ForeignKey('restaurantes.id'), nullable=False)
+    hora = db.Column(db.String(200), nullable=False)
+    num_personas = db.Column(db.Integer, nullable=False)
+    fecha = db.Column(db.String(200), nullable=False)
+
+
 @login_manager.user_loader
 def load_user(user_id):
     return Usuarios.query.get(int(user_id))
+
 
 class LoginForm(FlaskForm):
     username = StringField('username', validators=[InputRequired(), Length(min=4, max=15)])
@@ -680,10 +690,50 @@ def retrasar_pedidos(id):
         return redirect(url_for('home'))
 
 
-@app.route('/consola/admin/pedidos/restrasar/estado/<int:id>')
+@app.route('/reserva/<int:id>')
 @login_required
-def retrasar_pedidos(id):
-    pass
+def reserva(id):
+    if not current_user.is_admin:
+        restaurante = Restaurantes.query.get_or_404(id)
+        query = db.engine.execute(f'SELECT tipo,hor_abierto,hor_cierre FROM Restaurantes WHERE id = {id}')
+        now = datetime.now()
+        hora_actual = str(now.time())[0:5]
+        abierto = ""
+        cierre = ""
+
+        for q in query:
+            tipo = q[0]
+            abierto = q[1]
+            cierre = q[2]
+
+        horas = [abierto,cierre]
+        ac_ho, ac_min = hora_actual.split(":")
+        ab_ho , ab_min = abierto.split(':')
+        cie_ho , cie_min = cierre.split(':')
+        mensaje = ""
+        date = now.date()
+        if int(ac_ho) >= int(ab_ho) and int(ac_ho) <= int(cie_ho):
+            if request.method == 'POST':
+                personas = request.form['cantidad']
+                fecha = request.form['fecha']
+                hora,minuto = str(request.form['hora']).split(':')
+                tiempo = request.form['hora']
+                if int(hora) >= int(ab_ho) and int(hora) <= int(cie_ho):
+                    try:
+                        reserva = Reserva()
+                        db.session.add(reserva)
+                        db.session.commit()
+                        return redirect(url_for('consola_usuario'))
+                    except:
+                        return redirect('error')
+                else:
+                    return render_template("reserva.html", pro = restaurante, mess = "La hora seleccionada no esta disponible",date = date)        
+            else:
+                return render_template("reserva.html", pro = restaurante, mensaje = mensaje,date = date)
+        else:
+            return render_template("reserva.html", pro = restaurante, mensaje = "El restaurante esta cerrado de momento",date = date)
+    else:
+        return redirect(url_for('login'))
 
 
 if __name__ == "__main__":
