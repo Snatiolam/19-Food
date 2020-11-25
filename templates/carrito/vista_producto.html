@@ -270,6 +270,11 @@ html, body {
           
           <h1>{{producto.nombre}}</h1>
           <p>Descripción: {{producto.descripcion}}</p>
+          <br><br>
+
+          <p>Horario de apertura: {{horas[0]}}</p>
+          <br>
+          <p>Horario de cierre: {{horas[1]}}</p>
         </div>
 
         <!-- Product Configuration -->
@@ -309,18 +314,23 @@ html, body {
             <fieldset>
               <div>
                   <div>
-                  <input id="Field5_0" name="Field5" type="radio" value="S" tabindex="5" checked="checked">
+                  <input id="Field5_0" name="Field5" type="radio" value="2" tabindex="5" checked="checked">
                   <label class="choice" for="Field5_0" style="font-size: 15px; padding-right: 10px;">Gaseosa (+2$)</label>
                 </div>
   
                 <div>
-                    <input id="Field5_0" name="Field5" type="radio" value="S" tabindex="5" checked="checked">
+                    <input id="Field5_0" name="Field5" type="radio" value="4" tabindex="5" checked="checked">
                     <label class="choice" for="Field5_0" style="font-size: 15px; padding-right: 10px;">Jugo (+4$)</label>
                 </div>
 
                 <div>
-                    <input id="Field5_0" name="Field5" type="radio" value="S" tabindex="5" checked="checked">
+                    <input id="Field5_0" name="Field5" type="radio" value="7" tabindex="5" checked="checked">
                     <label class="choice" for="Field5_0" style="font-size: 15px; padding-right: 10px;">Especial de la casa (+7$)</label>
+                </div>
+
+                <div>
+                  <input id="Field5_0" name="Field5" type="radio" value="0" tabindex="5" checked="checked">
+                  <label class="choice" for="Field5_0" style="font-size: 15px; padding-right: 10px;">Agua Natural (+0$)</label>
                 </div>
 
               </div>

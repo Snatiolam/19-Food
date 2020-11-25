@@ -319,20 +319,7 @@
 	});
 
 
-	//filter movies
-	let searchBar = document.forms[0];
-	searchBar.addEventListener('keyup', function (e) {
-		let term = searchBar.querySelector("input").value.toLowerCase();
-		let movies = document.querySelectorAll(".title");
-		movies.forEach(movie => {
-			if (movie.textContent.toLowerCase().indexOf(term) != -1) {
-				movie.parentElement.style.display = "flex";
-			} else {
-				movie.parentElement.style.display = "none";
-			}
-		});
 
-	});
 </script>
 
 

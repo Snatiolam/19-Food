@@ -37,6 +37,16 @@ class Restaurantes(db.Model):
 
 #Añadir campo de texto donde se pueda anadir la imagen del producto
 
+
+class Carrito(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    id_user = db.Column(db.Integer, db.ForeignKey('usuarios.id'), nullable=False)
+    id_pro = db.Column(db.Integer, nullable=False)
+    cantidad = db.Column(db.Integer, nullable=False)
+    coste = db.Column(db.String(200), nullable=False)
+
+
+
 class Productos(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     id_user = db.Column(db.Integer, db.ForeignKey('usuarios.id'), nullable=False)
@@ -430,7 +440,7 @@ def admin_borrar_pro(id):
 @login_required
 def vista_producto(id):
     pro = Productos.query.get_or_404(id)
-    query = db.engine.execute(f'SELECT tipo,hor_abierto,hor_cierre FROM Restaurantes WHERE id = {id}')
+    query = db.engine.execute(f'SELECT tipo,hor_abierto,hor_cierre FROM Restaurantes WHERE id = {pro.id_res}')
     now = datetime.now()
     hora_actual = str(now.time())[0:5]
     abierto = ""
@@ -440,15 +450,26 @@ def vista_producto(id):
         tipo = q[0]
         abierto = q[1]
         cierre = q[2]
-    
-    if int(hora_actual[0:2]) >= int(abierto[0:2]) and int(hora_actual[0:2]) <= int(cierre[0:2]):
-        if int(hora_actual[3:]) >= int(abierto[3:]) and int(hora_actual[3:0]) <= int(cierre[3:0]):
-            if request.method == 'POST':
-                pass       
+
+    horas = [abierto,cierre]
+    ac_ho, ac_min = hora_actual.split(":")
+    ab_ho , ab_min = abierto.split(':')
+    cie_ho , cie_min = cierre.split(':')
+    if int(ac_ho) >= int(ab_ho) and int(ac_ho) <= int(cie_ho):
+        #if int(ac_min) >= int(ab_min):
+        if request.method == 'POST':
+            gaseosa = request.form['Field5'] 
+            cantidad = request.form['cantidad'] 
+            try:
+                db.session.commit()
+                return redirect(url_for('admin_pro'))
+            except:
+                return redirect(url_for('error'))    
+
         else:
-            return render_template("/carrito/vista_producto.html" , producto = pro, tipo = tipo, mess = "El restaurante esta cerrado de momento")    
+            return render_template("/carrito/vista_producto.html" , producto = pro, tipo = tipo, mess = "",horas = horas)    
     else:
-        return render_template("/carrito/vista_producto.html" , producto = pro, tipo = tipo, mess = "El restaurante esta cerrado de momento")    
+        return render_template("/carrito/vista_producto.html" , producto = pro, tipo = tipo, mess = "El restaurante esta cerrado de momento",horas = horas)    
     
 
 
