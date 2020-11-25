@@ -528,6 +528,45 @@ def del_carrito(id):
         return redirect(url_for('home'))
 
 
+
+
+
+@app.route('/restaurante/producto/carrito/tarjeta', methods=['GET', 'POST'])
+@login_required
+def tarjeta():
+    if not current_user.is_admin:
+        rand = random.randint(15,55)
+        return render_template('/carrito/tarjeta.html', rand = rand)
+        
+    else:
+        return redirect(url_for('home'))
+
+
+
+@app.route('/restaurante/producto/carrito/efectivo', methods=['GET', 'POST'])
+@login_required
+def efectivo():
+    if not current_user.is_admin:
+        return render_template('/carrito/efectivo.html')
+    else:
+        return redirect(url_for('home'))
+
+
+
+@app.route('/consola/usuario', methods=['GET', 'POST'])
+@login_required
+def consola_usuario():
+    if not current_user.is_admin:
+        return render_template('/consola_user.html')
+    else:
+        return redirect(url_for('home'))
+
+
+@app.route('/quienes_somos', methods=['GET', 'POST'])
+def somos():
+    return render_template('somos.html')
+
+
 if __name__ == "__main__":
     hashed_password = generate_password_hash("12345678", method='sha256')
     new_user = Usuarios(username="admin", email="admon.sojas@gmail.com",

@@ -597,7 +597,7 @@
 </style>
 
 <div class="wrap cf">
-  <h1 class="projTitle">Mi carrito! <span>Mira lo que tienes de momento aquí</span></h1>
+  <h1 class="projTitle">Tú carrito! <span>Mira lo que tienes de momento aquí</span></h1>
   <div class="heading cf">
     <h1>Mi carrito</h1>
     <a href="{{url_for('product')}}" class="continue">Seguir comprando</a>
@@ -649,8 +649,8 @@
 
       <li class="totalRow"><span class="label">Impuestos</span><span class="value">$3.00</span></li>
       <li class="totalRow final"><span class="label">Total</span><span class="value">${{total | round(2)}}</span></li>
-      <li class="totalRow"><a href="{{url_for('home')}}" class="btn continue">Checkout Tarjeta</a></li>
-      <li class="totalRow"><a href="{{url_for('home')}}" class="btn continue" style="margin-top: 20px;">Checkout Efectivo</a></li>
+      <li class="totalRow"><a href="{{url_for('tarjeta')}}" class="btn continue">Checkout Tarjeta</a></li>
+      <li class="totalRow"><a href="{{url_for('efectivo')}}" class="btn continue" style="margin-top: 20px;">Checkout Efectivo</a></li>
     </ul>
   </div>
 </div>
