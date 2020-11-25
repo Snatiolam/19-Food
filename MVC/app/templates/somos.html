@@ -1,0 +1,750 @@
+<html lang="en" >
+
+    <head>
+    
+      <meta charset="UTF-8">
+      <link rel="shortcut icon" type="image/png" href="{{url_for('static', filename='img/favicon.png')}}">
+<link rel="stylesheet" type="text/css"
+  href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+<script src="https://kit.fontawesome.com/e3cefcbc8d.js" crossorigin="anonymous"></script>
+    
+    <meta name="apple-mobile-web-app-title" content="CodePen">
+      
+    <style>
+    @import url(https://fonts.googleapis.com/css?family=Poppins:400,500,600,700,300);
+    @import url(https://fonts.googleapis.com/css?family=Montserrat:400,700);
+    .hide {
+      display: none;
+    }
+    
+    *, *::after, *::before {
+      box-sizing: border-box;
+    }
+    
+    body, html {
+      background: #E4E0E0;
+      font-size: 6px;
+      padding: 4rem 2rem;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      font-family: 'Poppins', sans-serif;
+    }
+    @media (min-width: 860px) {
+      body, html {
+        font-size: 8px;
+        padding: 3rem 5rem;
+      }
+    }
+    @media (min-width: 1200px) {
+      body, html {
+        font-size: 10px;
+        padding: 2rem 3rem;
+      }
+    }
+    
+    #icons {
+      display: none;
+    }
+    
+    .header-wrapper {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      padding: 2rem 4rem;
+      z-index: 20;
+    }
+    .header-wrapper .header {
+      position: relative;
+      display: block;
+      width: 100%;
+      height: 6rem;
+    }
+    .header-wrapper .menu-hamburger {
+      position: relative;
+      width: 1.3rem;
+      display: inline-block;
+      vertical-align: middle;
+      background: black;
+      height: 0.2rem;
+      cursor: pointer;
+    }
+    .header-wrapper .menu-hamburger::before {
+      content: "";
+      width: 1.3rem;
+      height: 0.2rem;
+      background: black;
+      position: absolute;
+      top: -0.4rem;
+    }
+    .header-wrapper .menu-hamburger::after {
+      content: "";
+      width: 1.3rem;
+      height: 0.2rem;
+      background: black;
+      position: absolute;
+      top: 0.4rem;
+    }
+    .header-wrapper .menu-txt {
+      position: relative;
+      display: inline-block;
+      vertical-align: middle;
+      margin-left: 0.5rem;
+      text-transform: uppercase;
+      cursor: pointer;
+    }
+    .header-wrapper .logo-wrapper {
+      position: absolute;
+      top: 0;
+      left: 50%;
+      -webkit-transform: translate(-50%, -50%);
+              transform: translate(-50%, -50%);
+    }
+    .header-wrapper .logo {
+      display: block;
+      font-size: 2rem;
+      font-weight: bold;
+      margin-top: 3rem;
+      line-height: 1;
+      font-weight: 600;
+    }
+    .header-wrapper .logo span {
+      display: block;
+    }
+    
+    .number-wrapper {
+      position: absolute;
+      height: 100%;
+      width: 12rem;
+      z-index: 10;
+    }
+    .number-wrapper .number-count {
+      position: relative;
+      display: inline-block;
+      top: 50%;
+      -webkit-transform: translateY(-50%);
+              transform: translateY(-50%);
+    }
+    .number-wrapper .number {
+      position: relative;
+      font-family: 'Montserrat', sans-serif;
+      font-size: 12rem;
+      color: #efefef;
+      margin-left: -5rem;
+      font-weight: 700;
+    }
+    
+    .nav-wrapper {
+      position: absolute;
+      height: 100%;
+      width: 12rem;
+      padding: 0 4rem;
+      top: 0;
+      right: 0;
+      text-align: center;
+      z-index: 10;
+    }
+    .nav-wrapper .nav-arrows {
+      position: relative;
+      display: inline-block;
+      top: 50%;
+      -webkit-transform: translateY(-50%);
+              transform: translateY(-50%);
+    }
+    .nav-wrapper .nav-up {
+      opacity: 0;
+    }
+    .nav-wrapper .nav-up, .nav-wrapper .nav-down {
+      width: 2rem;
+      height: 3rem;
+      cursor: pointer;
+    }
+    .nav-wrapper .nav-up svg, .nav-wrapper .nav-down svg {
+      fill: #666666;
+      width: 100%;
+      max-height: 100%;
+    }
+    .nav-wrapper .nav-up svg:hover, .nav-wrapper .nav-down svg:hover {
+      fill: black;
+    }
+    .nav-wrapper .nav-up {
+      -webkit-transform: rotate(180deg);
+              transform: rotate(180deg);
+    }
+    .nav-wrapper .nav-line {
+      width: 100%;
+      height: 0.1rem;
+      background: black;
+      margin: 1rem 0;
+      background: #666666;
+    }
+    
+    .slider-content {
+      position: relative;
+      max-width: 112rem;
+      min-width: 480px;
+      background: #fff;
+      margin: 0 auto;
+      overflow: hidden;
+      box-shadow: 0 0 35px 20px rgba(79, 69, 66, 0.2);
+    }
+    .slider-content .slide {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+    }
+    .slider-content .slide:after {
+      content: "";
+      display: table;
+      clear: both;
+    }
+    .slider-content .slide:first-child .txt-wrapper span.copy {
+      opacity: 1;
+    }
+    .slider-content .slide:nth-child(odd) .img {
+      margin-left: 50%;
+      -webkit-transform: translateY(-100%);
+              transform: translateY(-100%);
+    }
+    .slider-content .slide:nth-child(odd) .txt {
+      -webkit-transform: translateY(100%);
+              transform: translateY(100%);
+    }
+    .slider-content .slide:nth-child(even) .img {
+      -webkit-transform: translateY(100%);
+              transform: translateY(100%);
+    }
+    .slider-content .slide:nth-child(even) .txt {
+      margin-left: 50%;
+      -webkit-transform: translateY(-100%);
+              transform: translateY(-100%);
+    }
+    .slider-content .slide.active {
+      position: absolute;
+      z-index: 5;
+    }
+    .slider-content .slide.active .img, .slider-content .slide.active .txt {
+      -webkit-transform: translateY(0);
+              transform: translateY(0);
+    }
+    
+    .slider-container {
+      position: relative;
+      height: 65rem;
+      overflow: hidden;
+    }
+    .slider-container:after {
+      content: "";
+      display: table;
+      clear: both;
+    }
+    .slider-container .slide-content {
+      position: absolute;
+      display: block;
+      width: 50%;
+      height: 100%;
+      -webkit-transition: -webkit-transform 0.3s ease;
+      transition: -webkit-transform 0.3s ease;
+      transition: transform 0.3s ease;
+      transition: transform 0.3s ease, -webkit-transform 0.3s ease;
+      -webkit-transition-delay: 0.15s;
+              transition-delay: 0.15s;
+    }
+    .slider-container .slide-content.txt {
+      display: table;
+      padding: 8rem 14rem;
+      background: white;
+    }
+    .slider-container .slide-content .txt-wrapper {
+      position: relative;
+      display: table-cell;
+      vertical-align: middle;
+    }
+    .slider-container .slide-content .txt-wrapper span.copy {
+      position: relative;
+      text-transform: uppercase;
+      width: 2rem;
+      display: block;
+      font-size: 1rem;
+      line-height: 1;
+      margin-bottom: 4rem;
+      font-weight: 500;
+      opacity: 0;
+    }
+    .slider-container .slide-content .txt-wrapper h2 {
+      margin: 0;
+      font-size: 4.3rem;
+      margin-bottom: 4rem;
+      line-height: 1;
+      font-weight: 600;
+    }
+    .slider-container .slide-content .txt-wrapper h2 span {
+      display: block;
+    }
+    .slider-container .slide-content .txt-wrapper h3 {
+      margin: 0;
+      font-size: 2rem;
+      margin-bottom: 2rem;
+      line-height: 1;
+      font-weight: 400;
+    }
+    .slider-container .slide-content .txt-wrapper h3 span {
+      color: #ccc;
+    }
+    .slider-container .slide-content .txt-wrapper a {
+      text-decoration: none;
+      color: #AEACAB;
+    }
+    .slider-container .slide-content .txt-wrapper button {
+      position: relative;
+      padding: 1rem 3.5rem;
+      color: white;
+      text-align: center;
+      display: block;
+      border-radius: 3rem;
+      background: #d02e2e;
+      text-transform: uppercase;
+      border: none;
+      font-size: 1rem;
+      margin-top: 3rem;
+      font-weight: bold;
+      outline: none;
+      box-shadow: 0 0 1rem 0 rgba(0, 0, 0, 0.3);
+    }
+    .slider-container .slide-content .txt-wrapper .phone {
+      display: block;
+      color: black;
+      font-size: 1.9rem;
+    }
+    .slider-container .slide-content .txt-wrapper .subtitle {
+      display: block;
+      text-transform: uppercase;
+      color: #AEACAB;
+      font-weight: bold;
+      letter-spacing: 0.3rem;
+      font-size: 1.2rem;
+      margin-bottom: 1rem;
+    }
+    .slider-container .slide-content .txt-wrapper p.excerpt {
+      margin: 0;
+      color: #AEACAB;
+      font-size: 1.2rem;
+      line-height: 1.5;
+    }
+    .slider-container .slide-content .txt-wrapper span.view-all {
+      color: #AEACAB;
+    }
+    .slider-container .slide-content .txt-wrapper ul {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      margin-bottom: 1.5rem;
+    }
+    .slider-container .slide-content .txt-wrapper ul li {
+      position: relative;
+      margin: 1.5rem 0;
+      padding: 0;
+    }
+    .slider-container .slide-content .txt-wrapper ul li:after {
+      content: "";
+      display: table;
+      clear: both;
+    }
+    .slider-container .slide-content .txt-wrapper .date-wrapper {
+      width: 20%;
+      float: left;
+      color: #AEACAB;
+      text-align: left;
+    }
+    .slider-container .slide-content .txt-wrapper .date-wrapper .date {
+      font-size: 1.7rem;
+    }
+    .slider-container .slide-content .txt-wrapper .date-wrapper .month {
+      font-size: 1rem;
+    }
+    .slider-container .slide-content .txt-wrapper .post-wrapper {
+      width: 80%;
+      float: left;
+    }
+    .slider-container .slide-content .txt-wrapper .post-wrapper .post-title {
+      display: block;
+      font-size: 1.4rem;
+      line-height: 1.3;
+    }
+    .slider-container .slide-content .txt-wrapper .post-wrapper .post-title a {
+      display: block;
+      color: black;
+      cursor: pointer;
+    }
+    .slider-container .slide-content .txt-wrapper .post-wrapper .post-title a:hover {
+      text-decoration: underline;
+    }
+    .slider-container .slide-content .txt-wrapper .post-wrapper .post-info {
+      display: block;
+      color: #AEACAB;
+      font-size: 1rem;
+    }
+    .slider-container .slide-content .txt-wrapper .post-wrapper .post-info:after {
+      content: "";
+      display: table;
+      clear: both;
+    }
+    .slider-container .slide-content .txt-wrapper .post-wrapper .post-info ul {
+      margin: 0;
+    }
+    .slider-container .slide-content .txt-wrapper .post-wrapper .post-info li {
+      float: left;
+      margin: 0 0.5rem;
+    }
+    .slider-container .slide-content .txt-wrapper .post-wrapper .post-info li:first-child {
+      margin-left: 0;
+    }
+    .slider-container .slide-content img {
+      width: 100%;
+      height: 100%;
+      -o-object-fit: cover;
+         object-fit: cover;
+    }
+    
+    .footer {
+      position: absolute;
+      display: block;
+      width: 100%;
+      height: 6rem;
+      bottom: 0;
+      left: 0;
+      padding: 2rem 4rem;
+      z-index: 10;
+    }
+    .footer:after {
+      content: "";
+      display: table;
+      clear: both;
+    }
+    
+    .social-wrapper, .language-wrapper {
+      position: relative;
+    }
+    .social-wrapper ul, .language-wrapper ul {
+      position: relative;
+      list-style: none;
+      margin: 0;
+      padding: 0;
+    }
+    .social-wrapper li, .language-wrapper li {
+      position: relative;
+      display: inline-block;
+      vertical-align: middle;
+      margin: 0 0.5rem;
+    }
+    .social-wrapper a, .language-wrapper a {
+      text-decoration: none;
+      color: black;
+    }
+    
+    .social-wrapper {
+      float: left;
+    }
+    
+    .language-wrapper {
+      float: right;
+    }
+    </style>
+    
+      
+      
+      
+      
+    
+    </head>
+    
+    <body translate="no" >
+      <svg id="icons" xmlns="http://www.w3.org/2000/svg">  
+    <symbol id="icon-arrow" viewBox="0 0 476.213 476.213" >
+    <polygon fill="inherit" points="347.5,324.393 253.353,418.541 253.353,0 223.353,0 223.353,419.033 128.713,324.393 107.5,345.607 
+        238.107,476.213 368.713,345.606 "/>
+    </symbol>
+    </svg>
+    
+    
+    <div class="slider-content">
+      
+      <div class="header-wrapper">
+        <div class="header">
+            <a href="{{ url_for('home') }}"><div class="menu-wrapper">
+            <div class="menu-hamburger"></div>
+            <div class="menu-txt" style="text-decoration: none;">Volver a pagina de inicio</div>
+          </div></a>
+          <div class="logo-wrapper">
+            <div style="font-size:5em;" class="logo"><span>19-Food</span></div>
+          </div>
+          <div class="shop-wrapper"></div>
+        </div>
+      </div>
+      
+      <div class="number-wrapper">
+        <div class="number-count">
+          <div class="number">01</div>
+        </div>
+      </div>
+      
+      <div class="nav-wrapper">
+        <div class="nav-arrows">
+          <div class="nav-up">
+               <svg id="arrow-up">
+                <use xlink:href="#icon-arrow"></use>
+              </svg>
+           </div>
+          <div class="nav-line"></div>
+          <div class="nav-down">
+             <svg id="arrow-down">
+                <use xlink:href="#icon-arrow"></use>
+              </svg>
+          </div>
+        </div>
+      </div>
+      
+      <div class="slider-wrapper">
+        <div class="slider-container">                       
+          <div class="slide active" data-order="1">
+              <div class="slide-content txt">
+                <div class="txt-wrapper">
+                  <span class="copy">Introducción</span>
+                  <h2><span>Hola! Somos</span>19-Food</h2>
+                  <span class="subtitle">Tus productos y restaurantes a unos cuantos clicks</span>
+                  <p class="excerpt">Este es un proyecto elaborado por Sebastian Urrego y Santiago Alzate.<br> Buscamos una solucion a la pandemia y decidimos emprender con este proyecto.</p>
+                </div>
+              </div>
+              <div class="slide-content img">
+                <img src="https://images.unsplash.com/photo-1565070290031-430edfc74dba?ixlib=rb-1.2.1&auto=format&fit=crop&w=282&q=80" alt="" />
+              </div>
+            </div>  
+          <div class="slide" data-order="2">
+              <div class="slide-content txt">
+                <div class="txt-wrapper">
+                  <h2><span>Un proyecto </span> en construccion</h2>
+                   <p class="excerpt">Un proyecto que apenas empezamos a elaborar pero se ve prometedor. </p>
+                </div>
+              </div>
+              <div class="slide-content img">
+                <img src="{{url_for('static', filename='img/us.jpg')}}" alt="" />
+              </div>
+            </div>  
+          <div class="slide " data-order="3">
+              <div class="slide-content txt">
+                <div class="txt-wrapper">
+                  <span class="copy">Noticias</span>
+                  <ul>
+                    <li>
+                      <div class="date-wrapper">
+                        <div class="date">25</div>
+                        <div class="month">de Noviembre</div>
+                      </div>
+                      <div class="post-wrapper">
+                        <div class="post-title"><a href="">Nada planeado por ahora </a></div>
+                      </div>
+                    </li>
+                    <li>
+                      <div class="date-wrapper">
+                        <div class="date">18</div>
+                        <div class="month">de Noviembre</div>
+                      </div>
+                      <div class="post-wrapper">
+                        <div class="post-title"><a href="">Tampoco se ha planeado </a></div>
+                      </div>
+                    </li>
+                    <li>
+                      <div class="date-wrapper">
+                        <div class="date">06</div>
+                        <div class="month">de Noviembre</div>
+                      </div>
+                      <div class="post-wrapper">
+                        <div class="post-title"><a href="">Menos que lo hemos planeado </a></div>
+                      </div>
+                    </li>
+                  </ul>
+                  <span class="view-all">Mira todo los articulos</span> 
+                 
+                </div>
+              </div>
+              <div class="slide-content img">
+                <img src="https://images.unsplash.com/photo-1561969310-fa2e856250ba?ixlib=rb-1.2.1&auto=format&fit=crop&w=400&q=80" alt="" />
+              </div>
+            </div>
+          <div class="slide " data-order="4">
+              <div class="slide-content txt">
+                <div class="txt-wrapper">
+                  <span class="copy">Lo que los clientes dicen</span>
+                  <h2><span>La mejor </span> opcion </h2>
+                  <p class="excerpt">Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum</p>
+                </div>
+              </div>
+              <div class="slide-content img">
+                <img src="https://images.unsplash.com/photo-1551844430-7b8f476c030a?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=334&q=80" alt="" />
+              </div>
+            </div>
+          <div class="slide " data-order="5">
+              <div class="slide-content txt">
+                <div class="txt-wrapper">
+                  <span class="copy">Contactenos</span>
+                  <h3>Colombia <span>Antioquia</span></h3>
+                  <p class="excerpt">Algun lugar x de Colombia </p>
+                  <p><strong>Email:</strong> <a href="/cdn-cgi/l/email-protection#90fdf1e2f9ffe3fda1a8d0f7fdf1f9fcbef3fffd"><span class="__cf_email__" data-cfemail="264b47544f49554b171e66414b474f4a0845494b">[email&#160;protected]</span></a></p>
+                  <p>Llamen a: <span class="phone">+57 (04) 123 5673</span></p>
+                </div>
+              </div>
+              <div class="slide-content img">
+                <img src="https://images.unsplash.com/photo-1558013280-2ca994916f3e?ixlib=rb-1.2.1&auto=format&fit=crop&w=334&q=80" alt="" />
+              </div>
+            </div>
+        </div>
+      </div>
+      <div class="footer">
+        <div class="social-wrapper">
+          <ul>
+          </ul>
+        </div>
+        <div class="language-wrapper">
+          <ul>
+          </ul>
+        </div>
+      </div>
+    </div>
+      
+      <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.0/jquery.min.js'></script>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/gsap/1.19.0/TweenMax.min.js'></script>
+      
+          <script id="rendered-js" >
+    /*
+    Check out the original dribbble shot
+    https://dribbble.com/shots/2797559-Mr-bara-Split-Screen
+    */
+    
+    
+    
+    const up = $('.nav-up');
+    const down = $('.nav-down');
+    let counter = 1;
+    let number = $('.number');
+    
+    function moveDown(currentSlide) {
+      
+      var nextSlide = currentSlide.next();
+      var currentSlideUp = currentSlide.find('.txt');
+      var currentSlideDown = currentSlide.find('.img');
+      var nextSlideUp = nextSlide.find('.img');
+      var nextSlideDown = nextSlide.find('.txt');
+      let currentCopy = currentSlide.find('.copy'); 
+      let nextCopy = nextSlide.find('.copy'); 
+      
+      if( nextSlide.length !== 0 ) {
+        
+        counter = counter + 1;
+        
+        if( counter % 2 === 0 ) {
+          
+          TweenMax.to(number, 0.3, {x: '-100%'})
+          TweenMax.to( currentSlideUp, 0.4, { y: '-100%', delay:0.15 });
+          TweenMax.to( currentSlideDown, 0.4, { y: '100%', delay:0.15 });
+          setTimeout(function() {number.html('')},300);
+          
+        } else {
+          
+          number.html('0'+counter);
+          TweenMax.to(number, 0.3, {x: '0%', delay:1})
+          TweenMax.to( currentSlideUp, 0.4, { y: '100%', delay:0.15 });
+          TweenMax.to( currentSlideDown, 0.4, { y: '-100%', delay:0.15 });
+        }
+        
+        TweenMax.to( currentCopy, 0.3, {autoAlpha: 0, delay:0.15});
+        TweenMax.to( nextCopy, 0.3, {autoAlpha: 1, delay:1});
+        TweenMax.to( nextSlideUp, 0.4, { y: '0%', delay:0.15 });
+        TweenMax.to( nextSlideDown, 0.4, { y: '0%', delay:0.15 });
+        
+        $(currentSlide).removeClass('active');
+        $(nextSlide).addClass('active');
+        
+      } 
+    }
+    
+    function moveUp(currentSlide) {
+      
+      var prevSlide = currentSlide.prev();
+      var currentSlideUp = currentSlide.find('.img');
+      var currentSlideDown = currentSlide.find('.txt');
+      var prevSlideUp = prevSlide.find('.txt');
+      var prevSlideDown = prevSlide.find('.img');
+      let currentCopy = currentSlide.find('.copy');
+      let prevCopy = prevSlide.find('.copy'); 
+      
+      if( prevSlide.length !== 0 ) {
+        
+        counter = counter - 1;
+        
+        if( counter % 2 === 0 ) {
+          
+          
+          TweenMax.to(number, 0.3, {x: '-100%'});
+          TweenMax.to( currentSlideUp, 0.4, { y: '-100%', delay:0.15 });
+          TweenMax.to( currentSlideDown, 0.4, { y: '100%', delay:0.15 });
+          setTimeout(function() {number.html('')},300);
+    
+          
+        }else {
+          
+          number.html('0'+counter);
+          TweenMax.to(number, 0.3, {x: '0%', delay:1})
+          TweenMax.to( currentSlideUp, 0.4, { y: '100%', delay:0.15 });
+          TweenMax.to( currentSlideDown, 0.4, { y: '-100%', delay:0.15 });
+        }
+        
+        TweenMax.to( currentCopy, 0.3, {autoAlpha: 0, delay:0.15});
+        TweenMax.to( prevCopy, 0.3, {autoAlpha: 1, delay:1});
+        TweenMax.to( prevSlideUp, 0.4, { y: '0%', delay:0.15 });
+        TweenMax.to( prevSlideDown, 0.4, { y: '0%', delay:0.15 });
+        
+        $(currentSlide).removeClass('active');
+        $(prevSlide).addClass('active');
+        
+      }
+      
+    }
+    
+    function hideNav() {
+      
+      if( counter == $('.slide').length) {    
+        TweenMax.to($('.nav-down'),0.5, {autoAlpha: 0, delay:0.5} );
+      }else {
+         TweenMax.to($('.nav-down'),0.5, {autoAlpha: 1, delay:0.5} );
+      }
+      if( counter === 1) {    
+        TweenMax.to($('.nav-up'),0.5, {autoAlpha: 0, delay:0.5} );
+      }else {
+         TweenMax.to($('.nav-up'),0.5, {autoAlpha: 1, delay:0.5} );
+      }
+      
+    }
+    
+    
+    down.on('click', function() {
+      
+      var currentSlide = $('.active');
+      moveDown(currentSlide); 
+      hideNav();
+      
+    });
+    
+    up.on('click', function() {
+      
+      var currentSlide = $('.active');
+      moveUp(currentSlide);
+      hideNav();
+    
+    });
+        </script>
+    
+      
+    
+    </body>
+    
+    </html>

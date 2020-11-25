@@ -1,0 +1,517 @@
+{% extends "layout.html" %}
+
+
+{% block info %}
+
+  <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500" rel="stylesheet">
+  <style>
+    /* Basic Styling */
+html, body {
+  height: 100%;
+  width: 100%;
+  margin: 0;
+  font-family: 'Roboto', sans-serif;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 15px;
+  display: flex;
+}
+
+/* Columns */
+.left-column {
+  width: 65%;
+  position: relative;
+}
+
+.right-column {
+  width: 35%;
+  margin-top: 60px;
+}
+
+
+/* Left Column */
+.left-column img {
+  width: 100%;
+  position: absolute;
+  left: 0;
+  top: 0;
+  opacity: 0;
+  transition: all 0.3s ease;
+}
+
+.left-column img.active {
+  opacity: 1;
+}
+
+
+/* Right Column */
+
+/* Product Description */
+.product-description {
+  border-bottom: 1px solid #E1E8EE;
+  margin-bottom: 20px;
+}
+.product-description span {
+  font-size: 12px;
+  color: #358ED7;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  text-decoration: none;
+}
+.product-description h1 {
+  font-weight: 300;
+  font-size: 52px;
+  color: #43484D;
+  letter-spacing: -2px;
+}
+.product-description p {
+  font-size: 16px;
+  font-weight: 300;
+  color: #86939E;
+  line-height: 24px;
+}
+
+/* Product Configuration */
+.product-color span,
+.cable-config span {
+  font-size: 14px;
+  font-weight: 400;
+  color: #86939E;
+  margin-bottom: 20px;
+  display: inline-block;
+}
+
+/* Product Color */
+.product-color {
+  margin-bottom: 30px;
+}
+
+.color-choose div {
+  display: inline-block;
+}
+
+.color-choose input[type="radio"] {
+  display: none;
+}
+
+.color-choose input[type="radio"] + label span {
+  display: inline-block;
+  width: 40px;
+  height: 40px;
+  margin: -1px 4px 0 0;
+  vertical-align: middle;
+  cursor: pointer;
+  border-radius: 50%;
+}
+
+.color-choose input[type="radio"] + label span {
+  border: 2px solid #FFFFFF;
+  box-shadow: 0 1px 3px 0 rgba(0,0,0,0.33);
+}
+
+.color-choose input[type="radio"]#red + label span {
+  background-color: #C91524;
+}
+.color-choose input[type="radio"]#blue + label span {
+  background-color: #314780;
+}
+.color-choose input[type="radio"]#black + label span {
+  background-color: #323232;
+}
+
+.color-choose input[type="radio"]#green + label span {
+  background-color: #2ab40e;
+}
+
+.color-choose input[type="radio"]#white + label span {
+  background-color: #dad9d3;
+}
+.color-choose input[type="radio"]:checked + label span {
+  background-image: url({{url_for('static', filename='img/Home_page/check-icn.svg')}});
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+/* Cable Configuration */
+.cable-choose {
+  margin-bottom: 20px;
+}
+
+.cable-choose button {
+  border: 2px solid #E1E8EE;
+  border-radius: 6px;
+  padding: 13px 20px;
+  font-size: 14px;
+  color: #5E6977;
+  background-color: #fff;
+  cursor: pointer;
+  transition: all .5s;
+}
+
+.cable-choose button:hover,
+.cable-choose button:active,
+.cable-choose button:focus {
+  border: 2px solid #86939E;
+  outline: none;
+}
+
+.cable-config {
+  border-bottom: 1px solid #E1E8EE;
+  margin-bottom: 20px;
+}
+
+.cable-config a {
+  color: #358ED7;
+  text-decoration: none;
+  font-size: 12px;
+  position: relative;
+  margin: 10px 0;
+  display: inline-block;
+}
+.cable-config a:before {
+  content: "?";
+  height: 15px;
+  width: 15px;
+  border-radius: 50%;
+  border: 2px solid rgba(53, 142, 215, 0.5);
+  display: inline-block;
+  text-align: center;
+  line-height: 16px;
+  opacity: 0.5;
+  margin-right: 5px;
+}
+
+/* Product Price */
+.product-price {
+  display: flex;
+  align-items: center;
+}
+
+.product-price span {
+  font-size: 26px;
+  font-weight: 300;
+  color: #43474D;
+  margin-right: 20px;
+}
+
+.cart-btn {
+  display: inline-block;
+  background-color: #7DC855;
+  border-radius: 6px;
+  font-size: 16px;
+  color: #FFFFFF;
+  text-decoration: none;
+  padding: 12px 30px;
+  transition: all .5s;
+}
+.cart-btn:hover {
+  background-color: #64af3d;
+}
+
+/* Responsive */
+@media (max-width: 940px) {
+  .container {
+    flex-direction: column;
+    margin-top: 60px;
+  }
+
+  .left-column,
+  .right-column {
+    width: 100%;
+  }
+
+  .left-column img {
+    width: 300px;
+    right: 0;
+    top: -65px;
+    left: initial;
+  }
+}
+
+@media (max-width: 535px) {
+  .left-column img {
+    width: 220px;
+    top: -85px;
+  }
+}
+
+  </style>
+    <main class="container">
+
+      <!-- Left Column / Headphones Image -->
+      <div class="left-column" style=" overflow: hidden">
+        <!--<img data-image="black" src="{{url_for('static', filename='img/Home_page/slider-1.jpg')}}" alt="">-->
+        <!--<img data-image="blue" src="{{url_for('static', filename='img/Home_page/slider.jpg')}}" alt="">-->
+        <img data-image="red" class="active crop" src="{{producto.img_url}}" alt="" style="max-width: 700px; padding-top: 100px;">
+      </div>
+
+
+      <!-- Right Column -->
+      <div class="right-column">
+
+        <!-- Product Description -->
+        <div class="product-description">
+          {% if tipo == 'COL' %}
+            <span>Colombiana</span>
+          {% elif tipo == 'MEX' %}
+            <span>Mexicana</span>
+          {% elif tipo == 'PER' %}
+            <span>Peruana</span>
+          {% elif tipo == 'ITA' %}
+            <span>Italiana</span>
+          {% elif tipo == 'RAP' %}
+            <span>Comida rápida</span>
+          {% else %}
+            <span>Cultura diversa</span>
+          {% endif %}
+          
+          <h1>{{producto.nombre}}</h1>
+          <p>Descripción: {{producto.descripcion}}</p>
+          <br><br>
+
+          <p>Horario de apertura: {{horas[0]}}</p>
+          <br>
+          <p>Horario de cierre: {{horas[1]}}</p>
+        </div>
+
+        <!-- Product Configuration -->
+        <form action="" method="POST" id="add-movie">
+        <div class="product-configuration">
+          <!-- Product Color -->
+          <!--<div class="product-color">
+            <span>Colores disponibles:</span>
+            <fieldset>
+              <div class="color-choose">
+
+                <div>
+                  
+                  <input data-image="red" type="radio" id="red" name="color" value="rojo" checked>
+                  <label for="red"><span></span></label>
+                </div>
+
+                <div>
+                  <input data-image="blue" type="radio" id="blue" name="color" value="azul"checked>
+                  <label for="blue"><span></span></label>
+                </div>
+
+                <div>
+                  <input data-image="green" type="radio" id="green" name="color" value="verde" checked>
+                  <label for="green"><span></span></label>
+                </div>
+                
+              </div>
+            </fieldset>
+          </div>
+
+          <!-- Cable Configuration -->
+          
+          
+          <div class="cable-config">
+            <span>Agregar Bebida: </span>
+            <fieldset>
+              <div>
+                  <div>
+                  <input id="Field5_0" name="Field5" type="radio" value="2" tabindex="5" checked="checked">
+                  <label class="choice" for="Field5_0" style="font-size: 15px; padding-right: 10px;">Gaseosa (+2$)</label>
+                </div>
+  
+                <div>
+                    <input id="Field5_0" name="Field5" type="radio" value="4" tabindex="5" checked="checked">
+                    <label class="choice" for="Field5_0" style="font-size: 15px; padding-right: 10px;">Jugo (+4$)</label>
+                </div>
+
+                <div>
+                    <input id="Field5_0" name="Field5" type="radio" value="7" tabindex="5" checked="checked">
+                    <label class="choice" for="Field5_0" style="font-size: 15px; padding-right: 10px;">Especial de la casa (+7$)</label>
+                </div>
+
+                <div>
+                  <input id="Field5_0" name="Field5" type="radio" value="0" tabindex="5" checked="checked">
+                  <label class="choice" for="Field5_0" style="font-size: 15px; padding-right: 10px;">Agua Natural (+0$)</label>
+                </div>
+
+              </div>
+            </fieldset>
+            <br>
+            <span>¿Cuántas unidades?</span>
+            <div class="cable-choose">
+            <input style="padding: 5px; margin-top: 4px; width: 200px; font-size: 15px;" type="number" min="1" name="cantidad" id="cantidad"
+              placeholder="Cuantas unidades" value="1" required>
+            </div>
+
+            <br>
+            {% if mess != "" %}
+                <span style="color: red;">{{mess}}</span>
+            {% else %}
+                <span style="color: rgb(46, 189, 46);">El restaurante esta abierto, aprovecha!</span>
+            {% endif %}
+            <!--<a href="#">How to configurate your headphones</a>-->
+          </div>
+        </div>
+        
+        <!-- Product Pricing -->
+        <div class="product-price">
+          <span style="font-size: 20px;">Coste sin bebida: <br>{{producto.precio}} $</span> <br>
+            {% if mess != "" %}
+                <button class="cart-btn">Añadir al carrito</button>
+            {% else %}
+                <input type="submit" id="submit" class="cart-btn" value="Añadir al carrito" style="text-decoration: none;">
+            {% endif %}
+            
+
+          
+        </div>
+      </form>
+      </div>
+    </main>
+
+
+
+</script>
+  
+<style>
+body{
+  background:#f1f2f3;
+  font-size:82%;
+  color:#262626;
+  font-family:'Arial',sans-serif;
+}
+
+#wrap{
+  width:90%;
+  margin:20px auto;
+}
+
+#product_layout_3 .tabular ul.tabs {
+	width: 50%;
+	height: 80px;
+	list-style: none;
+	overflow: hidden;
+  padding: 0;
+}
+#product_layout_3 .tabular ul.tabs li {	
+	float: left;
+	width: 32%;
+  margin-right:1%;
+}
+#product_layout_3 .tabular ul.tabs li a {
+	position: relative;
+	display: block;
+	height: 30px;
+	margin-top: 40px;
+	padding: 10px 0 0 0;
+	font-size: 1.8em;
+	text-align: center;	
+	text-decoration: none;
+	color: #ffffff;
+	background: skyblue;
+	transition: padding 0.2s ease, margin 0.2s ease;
+  margin-bottom:-10px;
+  border-top-left-radius: 3px;
+  border-top-right-radius: 3px;
+}
+
+#product_layout_3 .tabular #content {
+  width: 100%;
+  min-height: 200px;
+  background: #545f60;
+  border-bottom-right-radius: 3px;
+  border-bottom-left-radius: 3px;
+  border-top-right-radius:3px;
+  padding:2em;
+  float:left;
+  margin-top:-10px;
+  border:1px solid #808080;
+  border-top:0;
+  margin-bottom:30px;
+  box-sizing:border-box;
+  -moz-box-sizing:border-box;
+}
+#product_layout_3 .tabular #content p{
+  color: #ffffff;
+  font-weight:500;
+  font-size: 1.4em;
+  margin: 10px;
+}
+
+#product_layout_3 .tabular #content #one{
+  -webkit-columns: 2;
+  -moz-columns: 2;
+}
+#product_layout_3 .tabular #content #two .author{
+  font-size:1.6em;
+  font-weight:700;
+  color:#FFF;
+  display:inline-block;
+  margin:10px;
+}
+#product_layout_3 .tabular #content #two .stars{
+  font-size:1.8em;
+  color:goldenrod;
+  display:inline-block;
+  margin:10px;
+}
+#product_layout_3 .tabular #content #two span.full_review a{
+  font-size:1.4em;
+  display:block;
+  color:skyblue;
+  text-align:center;
+}
+</style>
+
+<body translate="no" >
+  <link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+<body>
+<div id="wrap" style="position: relative; ">
+  <div id="product_layout_3">
+      <div class="tabular">
+        <ul class="tabs group" style="margin-bottom: -1px;">
+          <li><a href="#/two">Reseñas</a></li>
+        </ul>
+          <div id="content">
+            <aside id="two">
+              <!--{% for review in reviews %}
+              <span class="author">{{review[0]}}</span>
+              <span class="stars">  
+                {% for iteration in range(review[1]) %}
+                  <i class="fa fa-star"></i>
+                {% endfor %}
+            </span>
+              <p>
+                {{review[2]}}
+              </p>
+              <br><br>
+              {% endfor %}-->
+            </aside>
+          </div>
+      </div>
+    </div>
+  </div>
+</div>
+  
+  
+  
+      <script id="rendered-js" >
+(function($) {
+
+	var tabs =  $(".tabs li a");
+  
+	tabs.click(function() {
+		var content = this.hash.replace('/','');
+		tabs.removeClass("active");
+		$(this).addClass("active");
+    $("#content > aside").hide();
+    $(content).fadeIn(200);
+	});
+
+})(jQuery);
+    </script>
+ 
+
+
+
+{% endblock %}
