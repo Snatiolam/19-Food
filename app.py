@@ -690,7 +690,7 @@ def retrasar_pedidos(id):
         return redirect(url_for('home'))
 
 
-@app.route('/reserva/<int:id>')
+@app.route('/reserva/<int:id>' , methods=['GET', 'POST'])
 @login_required
 def reserva(id):
     if not current_user.is_admin:
@@ -711,6 +711,7 @@ def reserva(id):
         ab_ho , ab_min = abierto.split(':')
         cie_ho , cie_min = cierre.split(':')
         mensaje = ""
+        horas = [abierto,cierre]
         date = now.date()
         if int(ac_ho) >= int(ab_ho) and int(ac_ho) <= int(cie_ho):
             if request.method == 'POST':
@@ -718,20 +719,24 @@ def reserva(id):
                 fecha = request.form['fecha']
                 hora,minuto = str(request.form['hora']).split(':')
                 tiempo = request.form['hora']
-                if int(hora) >= int(ab_ho) and int(hora) <= int(cie_ho):
-                    try:
-                        reserva = Reserva()
-                        db.session.add(reserva)
-                        db.session.commit()
-                        return redirect(url_for('consola_usuario'))
-                    except:
-                        return redirect('error')
-                else:
-                    return render_template("reserva.html", pro = restaurante, mess = "La hora seleccionada no esta disponible",date = date)        
+                
+                try:
+                    query = db.engine.execute(f'SELECT COUNT(*) FROM Reserva WHERE id_user = {current_user.id} and fecha = {fecha}')
+                    for row in query:
+                        if row[0] != 0 :
+                            return render_template("reserva.html", pro = restaurante, mensaje = "No puedes hacer mas de una reserva por día",date = date , horas = horas)
+                    
+                    reserva = Reserva(id_user = current_user.id, id_res = id, hora = tiempo, num_personas = personas,
+                    fecha = fecha)
+                    db.session.add(reserva)
+                    db.session.commit()
+                    return redirect(url_for('consola_usuario'))
+                except:
+                    return redirect('error')
             else:
-                return render_template("reserva.html", pro = restaurante, mensaje = mensaje,date = date)
+                return render_template("reserva.html", pro = restaurante, mensaje = mensaje,date = date , horas = horas)
         else:
-            return render_template("reserva.html", pro = restaurante, mensaje = "El restaurante esta cerrado de momento",date = date)
+            return render_template("reserva.html", pro = restaurante, mensaje = "El restaurante esta cerrado de momento",date = date, horas = horas)
     else:
         return redirect(url_for('login'))
 
