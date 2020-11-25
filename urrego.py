@@ -6,7 +6,10 @@ from wtforms import StringField, PasswordField, BooleanField
 from wtforms.validators import InputRequired, Email, Length
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
+from datetime import datetime
 import random
+
+
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'Thisissupposedtobesecret!'
@@ -253,7 +256,7 @@ def admin_res():
                     return redirect(url_for('admin_res'))
                 except:
                     return render_template('admin/restaurantes.html', rest = restaurantes, 
-                    count = count, error = "No se pudo agregar el restaurante!")
+                    count = count, mensaje = "No se pudo agregar el restaurante!")
 
             except:
                 return redirect(url_for('error'))
@@ -430,10 +433,26 @@ def admin_borrar_pro(id):
 @login_required
 def vista_producto(id):
     pro = Productos.query.get_or_404(id)
-    if request.method == 'POST':
-        pass
+    query = db.engine.execute(f'SELECT tipo,hor_abierto,hor_cierre FROM Restaurantes WHERE id = {id}')
+    now = datetime.now()
+    hora_actual = str(now.time())[0:5]
+    abierto = ""
+    cierre = ""
+
+    for q in query:
+        tipo = q[0]
+        abierto = q[1]
+        cierre = q[2]
+    
+    if int(hora_actual[0:2]) >= int(abierto[0:2]) and int(hora_actual[0:2]) <= int(cierre[0:2]):
+        if int(hora_actual[3:]) >= int(abierto[3:]) and int(hora_actual[3:0]) <= int(cierre[3:0]):
+            if request.method == 'POST':
+                pass       
+        else:
+            return render_template("/carrito/vista_producto.html" , producto = pro, tipo = tipo, mess = "El restaurante esta cerrado de momento")    
     else:
-        return render_template("/carrito/vista_producto.html" , producto = pro)
+        return render_template("/carrito/vista_producto.html" , producto = pro, tipo = tipo, mess = "El restaurante esta cerrado de momento")    
+    
 
 
 

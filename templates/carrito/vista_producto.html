@@ -254,12 +254,18 @@ html, body {
 
         <!-- Product Description -->
         <div class="product-description">
-          {% if producto.tipo == 'COL' %}
+          {% if tipo == 'COL' %}
             <span>Colombiana</span>
-          {% elif producto.tipo == 'M' %}
-            <span>Mujeres</span>
+          {% elif tipo == 'MEX' %}
+            <span>Mexicana</span>
+        {% elif tipo == 'PER' %}
+        <span>Peruana</span>
+        {% elif tipo == 'ITA' %}
+        <span>Italiana</span>
+        {% elif tipo == 'RAP' %}
+        <span>Comida rápida</span>
           {% else %}
-            <span>Unisex</span>
+            <span>Cultura diversa</span>
           {% endif %}
           
           <h1>{{producto.nombre}}</h1>
@@ -296,6 +302,8 @@ html, body {
           </div>
 
           <!-- Cable Configuration -->
+          
+          
           <div class="cable-config">
             <span>Agregar Bebida: </span>
             <fieldset>
@@ -325,28 +333,22 @@ html, body {
             </div>
 
             <br>
-              <p style="color: red; font-size: 22px;">Este producto no esta en Stock por el momento<br> En aproximadamente {{producto.id}} habran más unidades</p>  
-
-            <br>
-              <p style="color: #2c345c; font-size: 22px;">Hay {{producto.stock}} en Stock</p>  
-
-            <!--<a href="#">How to configurate your headphones</a>-->
-            {% if error != "" %}
-              <br>
-                <p style="color: red; font-size: 22px;">{{error}}</p>  
+            {% if mess != "" %}
+                <span style="color: red;">{{mess}}</span>
             {% endif %}
+            <!--<a href="#">How to configurate your headphones</a>-->
           </div>
         </div>
         
         <!-- Product Pricing -->
         <div class="product-price">
-
-            <span>{{producto.precio}} $</span>
-          <span style="font-size: 20px;">Antes: <span style="text-decoration: line-through; font-size: 20px;">{{producto.precio}} $</span></span> <br>
-          <span style="font-size: 20px;">Ahora:  $</span> <br>
-            <button class="cart-btn">Añadir al carrito</button>
-
-            <input type="submit" id="submit" class="cart-btn" value="Añadir al carrito" style="text-decoration: none;">
+          <span style="font-size: 20px;">Coste sin bebida: <br>{{producto.precio}} $</span> <br>
+            {% if mess != "" %}
+                <button class="cart-btn">Añadir al carrito</button>
+            {% else %}
+                <input type="submit" id="submit" class="cart-btn" value="Añadir al carrito" style="text-decoration: none;">
+            {% endif %}
+            
 
           
         </div>
