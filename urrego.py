@@ -457,13 +457,14 @@ def vista_producto(id):
     if int(ac_ho) >= int(ab_ho) and int(ac_ho) <= int(cie_ho):
         #if int(ac_min) >= int(ab_min):
         if request.method == 'POST':
-            if current_user.is_admin:
+            if not current_user.is_admin:
                 gaseosa = int(request.form['Field5'])
                 cantidad = int(request.form['cantidad'])
-                
+                cart = Carrito(id_user = current_user.id, id_pro = id, cantidad = cantidad, coste = str((int(pro.precio) + gaseosa)))
                 try:
+                    db.session.add(cart)
                     db.session.commit()
-                    return redirect(url_for('admin_pro'))
+                    return redirect(url_for('carrito'))
                 except:
                     return redirect(url_for('error'))
             else:
@@ -477,8 +478,11 @@ def vista_producto(id):
 
 
 @app.route('/restaurante/producto/carrito', methods=['GET', 'POST'])
-def carrito(id):
-    pass
+def carrito():
+    if not current_user.is_admin:
+        return render_template('carrito/carrito.html')
+    else:
+        return redirect(url_for('home'))
 
 
 if __name__ == "__main__":
