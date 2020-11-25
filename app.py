@@ -178,15 +178,15 @@ def product():
     productos = Productos.query.order_by(Productos.id).all()
     arr = []
     for pro in productos:
+        query = db.engine.execute(f'SELECT img_url,tipo FROM Restaurantes WHERE id = {pro.id_res}')
         query = db.engine.execute(f'SELECT img_url,tipo,nombre FROM Restaurantes WHERE id = {pro.id_res}')
         for row in query:
-            #{% for arr in arr%}
-            #{% if arr[0] ==  pro.id %}
-            #    arr[1] y arr[2]
-            #{% endif %}
+             #{% for arr in arr%}
+             #{% if arr[0] ==  pro.id %}
+             #    arr[1] y arr[2]
+             #{% endif %}
+            arr.append([pro.id,row[0],row[1]])
             arr.append([row[0],row[1],row[2]])
-
-
     return render_template('productos.html', productos=productos, tipo=tipo, arr = arr)
 
 @app.route("/restaurantes", methods=['GET', 'POST'])
@@ -444,6 +444,7 @@ def admin_borrar_pro(id):
         return redirect(url_for('home'))
 
 
+
 @app.route('/restaurante/producto/vista_compra/<int:id>', methods=['GET', 'POST'])
 def vista_producto(id):
     pro = Productos.query.get_or_404(id)
@@ -465,13 +466,14 @@ def vista_producto(id):
     if int(ac_ho) >= int(ab_ho) and int(ac_ho) <= int(cie_ho):
         #if int(ac_min) >= int(ab_min):
         if request.method == 'POST':
-            if current_user.is_admin:
+            if not current_user.is_admin:
                 gaseosa = int(request.form['Field5'])
                 cantidad = int(request.form['cantidad'])
-                
+                cart = Carrito(id_user = current_user.id, id_pro = id, cantidad = cantidad, coste = str((int(pro.precio) + gaseosa)))
                 try:
+                    db.session.add(cart)
                     db.session.commit()
-                    return redirect(url_for('admin_pro'))
+                    return redirect(url_for('carrito'))
                 except:
                     return redirect(url_for('error'))
             else:
@@ -485,9 +487,11 @@ def vista_producto(id):
 
 
 @app.route('/restaurante/producto/carrito', methods=['GET', 'POST'])
-def carrito(id):
-    pass
-
+def carrito():
+    if not current_user.is_admin:
+        return render_template('carrito/carrito.html')
+    else:
+        return redirect(url_for('home'))
 
 
 if __name__ == "__main__":
