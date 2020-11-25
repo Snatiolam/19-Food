@@ -528,6 +528,10 @@ def del_carrito(id):
         return redirect(url_for('home'))
 
 
+
+
+
+
 if __name__ == "__main__":
     hashed_password = generate_password_hash("12345678", method='sha256')
     new_user = Usuarios(username="admin", email="admon.sojas@gmail.com",
