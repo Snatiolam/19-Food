@@ -486,9 +486,44 @@ def vista_producto(id):
 
 
 @app.route('/restaurante/producto/carrito', methods=['GET', 'POST'])
+@login_required
 def carrito():
     if not current_user.is_admin:
-        return render_template('carrito/carrito.html')
+        productos_cart = db.engine.execute(f'SELECT * FROM Carrito WHERE id_user = {current_user.id}')
+        count = 0
+        total = 0
+        productos = []
+        for pro in productos_cart:
+            query = db.engine.execute(f'SELECT * FROM Productos WHERE id = {pro.id_pro}')
+            for row in query:
+                # Id del carrito, nommbre producto, cantidad, precio, imagen
+                total = total + (int(pro[4]) * int(pro[3]))
+                productos.append([pro[0], row[4], pro[3], pro[4], row[3]])
+            count = count + 1
+        return render_template('carrito/carrito.html',productos = productos, count = count, total = total)
+    else:
+        return redirect(url_for('home'))
+
+
+
+@app.route('/restaurante/producto/carrito/del/<int:id>', methods=['GET', 'POST'])
+@login_required
+def del_carrito(id):
+    if not current_user.is_admin:
+        persona = db.engine.execute(f'SELECT COUNT(*) FROM Carrito WHERE id_user = {current_user.id} and id = {id}')
+        for row in persona:
+            if row[0] < 1:
+                return "No puedes realizar esta acción pillín"
+        
+
+        element_to_delete = Carrito.query.get_or_404(id)
+        try:
+            db.session.delete(element_to_delete)
+            db.session.commit()
+            return redirect(url_for('carrito'))
+        except:
+            return redirect(url_for('error'))
+
     else:
         return redirect(url_for('home'))
 
