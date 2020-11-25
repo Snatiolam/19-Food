@@ -164,10 +164,23 @@
         </div>
         <div style="text-align:center; width:70%; float:right;">
             <h1 style="height:auto;margin:0px;"><b>{{ restaurante.nombre }}</b></h1>
-            <h5 style="height:auto;margin:0px;"><b>{{ restaurante.tipo }}</b></h5>
-            <div><p>{{ restaurante.descripcion }}</p></div>
+            {% if restaurante.tipo=="COL" %}
+            <h5 style="height:auto;margin:0px;"><b>Colombiana</b></h5>
+            {% elif restaurante.tipo=="PER" %}
+            <h5 style="height:auto;margin:0px;"><b>Peruana</b></h5>
+            {% elif restaurante.tipo=="MEX" %}
+            <h5 style="height:auto;margin:0px;"><b>Mexicana</b></h5>
+            {% elif restaurante.tipo=="RAP" %}
+            <h5 style="height:auto;margin:0px;"><b>Comida rapida</b></h5>
+            {% elif restaurante.tipo=="ITA" %}
+            <h5 style="height:auto;margin:0px;"><b>Italiana</b></h5>
+            {% elif restaurante.tipo=="ALT" %}
+            <h5 style="height:auto;margin:0px;"><b>Alternativa</b></h5>
+            {% endif %}
+            <span style="height:auto;margin:0px;">Horario: {{ restaurante.hor_abierto }} - {{ restaurante.hor_cierre }}</span>
+            <div style="height:auto;margin:0px;"><p>{{ restaurante.descripcion }}</p></div>
             <form>
-                <button class="button-reserva" style="vertical-align:middle"><span>Reserva </span></button>
+                <button class="button-reserva" style="vertical-align:middle height:auto;margin:0px;"><span>Reserva </span></button>
             </form>
         </div>
     </div>
