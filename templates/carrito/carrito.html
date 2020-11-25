@@ -616,21 +616,21 @@
 
         <div class="infoWrap">
           <div class="cartSection">
-            <img src="{{pro[2]}}" alt="" class="itemImg" />
-            <p class="itemNumber">Color: {{pro[3]}} || Talla : {{pro[4]}}</p>
+            <img src="{{pro[4]}}" alt="" class="itemImg" />
+            <p class="itemNumber"> Comida deliciosa solo para tí</p>
             <h3>{{pro[1]}}</h3>
 
-            <p> <input type="text" class="qty" placeholder="{{pro[6]}}" /> x ${{pro[5]}}</p>
+            <p> <input type="text" class="qty" placeholder="{{pro[2]}}" /> x ${{pro[3]}}</p>
 
-            <p class="stockStatus"> In Stock</p>
+            <p class="stockStatus"> Disponible</p>
           </div>
 
 
           <div class="prodTotal cartSection">
-            <p>${{ (pro[5] * pro[6]) | round(2)}}</p>
+            <p>$ {{pro[3] * pro[2]}}</p>
           </div>
           <div class="cartSection removeWrap">
-            <a href="/carrito/producto/delete/{{pro[0]}}" class="remove">x</a>
+            <a href="/restaurante/producto/carrito/del/{{pro[0]}}" class="remove">x</a>
           </div>
         </div>
 
@@ -649,7 +649,8 @@
 
       <li class="totalRow"><span class="label">Impuestos</span><span class="value">$3.00</span></li>
       <li class="totalRow final"><span class="label">Total</span><span class="value">${{total | round(2)}}</span></li>
-      <li class="totalRow"><a href="{{url_for('check_out')}}" class="btn continue">Checkout</a></li>
+      <li class="totalRow"><a href="{{url_for('home')}}" class="btn continue">Checkout Tarjeta</a></li>
+      <li class="totalRow"><a href="{{url_for('home')}}" class="btn continue" style="margin-top: 20px;">Checkout Efectivo</a></li>
     </ul>
   </div>
 </div>

@@ -318,7 +318,7 @@ Paleta de colores:
   {% if current_user.is_admin %}
   <a href="{{url_for('consola_admin')}}"><i class="fas fa-user-tie"></i> Cuenta Admin</a>
   {% else %}
-  <a href=""><i class="fas fa-shopping-cart"></i> Carrito</a>
+  <a href="{{url_for('carrito')}}"><i class="fas fa-shopping-cart"></i> Carrito</a>
   <a href=""><i class="far fa-smile"></i> Cuenta</a>
   {% endif %}
   {% else %}
