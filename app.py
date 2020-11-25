@@ -175,11 +175,21 @@ def productos():
 @app.route("/products", methods=['GET', 'POST'])
 def product():
     tipo = "all"
-    query = db.engine.execute(f'SELECT tipo,hor_abierto,hor_cierre FROM Restaurantes WHERE id = {pro.id_res}')
-    if request.method == 'POST':
-        tipo = request.form.get("tipo")
+    
+    
     productos = Productos.query.order_by(Productos.id).all()
-    return render_template('productos.html', productos=productos, tipo=tipo)
+    arr = []
+    for pro in productos:
+        query = db.engine.execute(f'SELECT img_url,tipo FROM Restaurantes WHERE id = {pro.id_res}')
+        for row in query:
+            #{% for arr in arr%}
+            #{% if arr[0] ==  pro.id %}
+            #    arr[1] y arr[2]
+            #{% endif %}
+            arr.append([pro.id,row[0],row[1]])
+
+
+    return render_template('productos.html', productos=productos, tipo=tipo, arr = arr)
 
 @app.route("/restaurantes", methods=['GET', 'POST'])
 def restaurants():
@@ -436,9 +446,7 @@ def admin_borrar_pro(id):
         return redirect(url_for('home'))
 
 
-
 @app.route('/restaurante/producto/vista_compra/<int:id>', methods=['GET', 'POST'])
-@login_required
 def vista_producto(id):
     pro = Productos.query.get_or_404(id)
     query = db.engine.execute(f'SELECT tipo,hor_abierto,hor_cierre FROM Restaurantes WHERE id = {pro.id_res}')
@@ -459,19 +467,28 @@ def vista_producto(id):
     if int(ac_ho) >= int(ab_ho) and int(ac_ho) <= int(cie_ho):
         #if int(ac_min) >= int(ab_min):
         if request.method == 'POST':
-            gaseosa = request.form['Field5'] 
-            cantidad = request.form['cantidad'] 
-            try:
-                db.session.commit()
-                return redirect(url_for('admin_pro'))
-            except:
-                return redirect(url_for('error'))    
+            if current_user.is_admin:
+                gaseosa = int(request.form['Field5'])
+                cantidad = int(request.form['cantidad'])
+                
+                try:
+                    db.session.commit()
+                    return redirect(url_for('admin_pro'))
+                except:
+                    return redirect(url_for('error'))
+            else:
+                return render_template("/carrito/vista_producto.html" , producto = pro, tipo = tipo, mess = "Eres un admin! No puedes tener un carrito",horas = horas)         
 
         else:
             return render_template("/carrito/vista_producto.html" , producto = pro, tipo = tipo, mess = "",horas = horas)    
     else:
         return render_template("/carrito/vista_producto.html" , producto = pro, tipo = tipo, mess = "El restaurante esta cerrado de momento",horas = horas)    
     
+
+
+@app.route('/restaurante/producto/carrito', methods=['GET', 'POST'])
+def carrito(id):
+    pass
 
 
 

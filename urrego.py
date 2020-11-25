@@ -437,7 +437,6 @@ def admin_borrar_pro(id):
 
 
 @app.route('/restaurante/producto/vista_compra/<int:id>', methods=['GET', 'POST'])
-@login_required
 def vista_producto(id):
     pro = Productos.query.get_or_404(id)
     query = db.engine.execute(f'SELECT tipo,hor_abierto,hor_cierre FROM Restaurantes WHERE id = {pro.id_res}')
@@ -458,13 +457,17 @@ def vista_producto(id):
     if int(ac_ho) >= int(ab_ho) and int(ac_ho) <= int(cie_ho):
         #if int(ac_min) >= int(ab_min):
         if request.method == 'POST':
-            gaseosa = request.form['Field5'] 
-            cantidad = request.form['cantidad'] 
-            try:
-                db.session.commit()
-                return redirect(url_for('admin_pro'))
-            except:
-                return redirect(url_for('error'))    
+            if current_user.is_admin:
+                gaseosa = int(request.form['Field5'])
+                cantidad = int(request.form['cantidad'])
+                
+                try:
+                    db.session.commit()
+                    return redirect(url_for('admin_pro'))
+                except:
+                    return redirect(url_for('error'))
+            else:
+                return render_template("/carrito/vista_producto.html" , producto = pro, tipo = tipo, mess = "Eres un admin! No puedes tener un carrito",horas = horas)         
 
         else:
             return render_template("/carrito/vista_producto.html" , producto = pro, tipo = tipo, mess = "",horas = horas)    
@@ -472,6 +475,10 @@ def vista_producto(id):
         return render_template("/carrito/vista_producto.html" , producto = pro, tipo = tipo, mess = "El restaurante esta cerrado de momento",horas = horas)    
     
 
+
+@app.route('/restaurante/producto/carrito', methods=['GET', 'POST'])
+def carrito(id):
+    pass
 
 
 if __name__ == "__main__":

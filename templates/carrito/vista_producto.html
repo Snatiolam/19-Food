@@ -258,12 +258,12 @@ html, body {
             <span>Colombiana</span>
           {% elif tipo == 'MEX' %}
             <span>Mexicana</span>
-        {% elif tipo == 'PER' %}
-        <span>Peruana</span>
-        {% elif tipo == 'ITA' %}
-        <span>Italiana</span>
-        {% elif tipo == 'RAP' %}
-        <span>Comida rápida</span>
+          {% elif tipo == 'PER' %}
+            <span>Peruana</span>
+          {% elif tipo == 'ITA' %}
+            <span>Italiana</span>
+          {% elif tipo == 'RAP' %}
+            <span>Comida rápida</span>
           {% else %}
             <span>Cultura diversa</span>
           {% endif %}
@@ -338,13 +338,15 @@ html, body {
             <br>
             <span>¿Cuántas unidades?</span>
             <div class="cable-choose">
-            <input style="padding: 5px; margin-top: 4px; width: 200px; font-size: 15px;" type="text" name="cantidad" id="cantidad"
+            <input style="padding: 5px; margin-top: 4px; width: 200px; font-size: 15px;" type="number" min="1" name="cantidad" id="cantidad"
               placeholder="Cuantas unidades" value="1" required>
             </div>
 
             <br>
             {% if mess != "" %}
                 <span style="color: red;">{{mess}}</span>
+            {% else %}
+                <span style="color: rgb(46, 189, 46);">El restaurante esta abierto, aprovecha!</span>
             {% endif %}
             <!--<a href="#">How to configurate your headphones</a>-->
           </div>
