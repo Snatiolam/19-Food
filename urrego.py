@@ -61,7 +61,19 @@ class Usuarios(UserMixin, db.Model):
     username = db.Column(db.String(200), nullable=False)
     email = db.Column(db.String(200), nullable=False)
     is_admin = db.Column(db.Boolean(), default = False, nullable = False )
-    password = db.Column(db.String(200), nullable=False) # Hash, pero por ahora inseguro y directo
+    password = db.Column(db.String(200), nullable=False) 
+
+
+class Registro(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    id_user = db.Column(db.Integer, db.ForeignKey('usuarios.id'), nullable=False)
+    id_res = db.Column(db.Integer, db.ForeignKey('restaurantes.id'), nullable=False)
+    id_pro = db.Column(db.Integer, nullable=False)
+    precio = db.Column(db.String(200), nullable=False)
+    cantidad = db.Column(db.Integer, nullable=False)
+    tiempo = db.Column(db.String(200), nullable=False)
+    entregado = db.Column(db.Boolean(), default = False, nullable = False )
+
 
 @login_manager.user_loader
 def load_user(user_id):
@@ -479,6 +491,7 @@ def carrito():
                 total = total + (int(pro[4]) * int(pro[3]))
                 productos.append([pro[0], row[4], pro[3], pro[4], row[3]])
             count = count + 1
+            total = total + 5 
         return render_template('carrito/carrito.html',productos = productos, count = count, total = total)
     else:
         return redirect(url_for('home'))
@@ -515,10 +528,29 @@ def del_carrito(id):
 def tarjeta():
     if not current_user.is_admin:
         rand = random.randint(15,55)
-        return render_template('/carrito/tarjeta.html', rand = rand)
-        
+        if request.method == 'POST':
+            productos_cart = db.engine.execute(f'SELECT * FROM Carrito WHERE id_user = {current_user.id}')
+            for pro in productos_cart:
+                query = db.engine.execute(f'SELECT * FROM Productos WHERE id = {pro.id_pro}')
+                for row in query:
+                    now = datetime.now()
+                    hora_actual = str(now.time())[0:5]
+                    try:
+                        registro = Registro(id_user = current_user.id,id_res = row[2], id_pro = row[0], precio = row[5], cantidad = pro[3],
+                        tiempo = hora_actual, entregado = False)
+                        db.session.add(registro)
+                    except:
+                        return redirect(url_for('error'))
+            
+
+            cart_del = db.engine.execute(f'DELETE FROM Carrito WHERE id_user = {current_user.id}')
+            db.session.commit()
+            return redirect(url_for('consola_usuario'))
+        else:
+            return render_template('/carrito/tarjeta.html', rand = rand)
     else:
         return redirect(url_for('home'))
+
 
 
 
@@ -526,9 +558,32 @@ def tarjeta():
 @login_required
 def efectivo():
     if not current_user.is_admin:
-        return render_template('/carrito/efectivo.html')
+        rand = random.randint(15,55)
+        if request.method == 'POST':
+            productos_cart = db.engine.execute(f'SELECT * FROM Carrito WHERE id_user = {current_user.id}')
+            for pro in productos_cart:
+                query = db.engine.execute(f'SELECT * FROM Productos WHERE id = {pro.id_pro}')
+                for row in query:
+                    now = datetime.now()
+                    hora_actual = str(now.time())[0:5]
+                    try:
+                        registro = Registro(id_user = current_user.id,id_res = row[2] ,id_pro = row[0], precio = row[5], cantidad = pro[3],
+                        tiempo = hora_actual)
+                        db.session.add(registro)
+                    except:
+                        return redirect(url_for('error'))
+
+
+            cart_del = db.engine.execute(f'DELETE FROM Carrito WHERE id_user = {current_user.id}')
+            db.session.commit()
+            return redirect(url_for('consola_usuario'))
+        else:
+            return render_template('/carrito/efectivo.html', rand = rand)
     else:
         return redirect(url_for('home'))
+
+
+
 
 
 
@@ -544,6 +599,91 @@ def consola_usuario():
 @app.route('/quienes_somos', methods=['GET', 'POST'])
 def somos():
     return render_template('somos.html')
+
+
+
+@app.route('/consola/admin/pedidos')
+@login_required
+def admin_pedidos():
+    if current_user.is_admin:
+        query = db.engine.execute(f'SELECT id FROM Restaurantes WHERE id_user = {current_user.id}')
+        productos = []
+        count = 0
+        for row in query:
+            pendiente = db.engine.execute(f'SELECT * FROM Registro WHERE id_res = {row[0]}')
+            for product in pendiente:
+                productos.append(product)
+                count = count + 1
+
+    
+        return render_template('admin/pedidos.html', count = count, productos = productos)
+    else:
+        return redirect(url_for('home'))
+
+
+
+@app.route('/consola/admin/pedidos/update/estado/<int:id>')
+@login_required
+def actualizar_pedidos(id):
+    if current_user.is_admin:
+        query = db.engine.execute(f'SELECT id FROM Restaurantes WHERE id_user = {current_user.id}')
+        productos = []
+        count = 0
+        tiene = False
+        for row in query:
+            pendiente = db.engine.execute(f'SELECT COUNT(*) FROM Registro WHERE id_res = {row[0]}')
+            for product in pendiente:
+                if product[0] != 0:
+                    tiene = True
+                
+        if not tiene:
+            return "No puedes estar aqui"
+        else:
+            productos = Registro.query.get_or_404(id)
+            productos.entregado = True
+            try:
+                db.session.commit()
+                return redirect(url_for('admin_pedidos'))
+            except:
+                return redirect(url_for('error'))
+    else:
+        return redirect(url_for('home'))
+
+
+@app.route('/consola/admin/pedidos/restrasar/estado/<int:id>')
+@login_required
+def retrasar_pedidos(id):
+    if current_user.is_admin:
+        query = db.engine.execute(f'SELECT id FROM Restaurantes WHERE id_user = {current_user.id}')
+        productos = []
+        count = 0
+        tiene = False
+        for row in query:
+            pendiente = db.engine.execute(f'SELECT COUNT(*) FROM Registro WHERE id_res = {row[0]}')
+            for product in pendiente:
+                if product[0] != 0:
+                    tiene = True
+                
+        if not tiene:
+            return "No puedes estar aqui"
+        else:
+            productos = Registro.query.get_or_404(id)
+            now = datetime.now()
+            hora_actual = str(now.time())[0:5]
+            productos.tiempo = hora_actual
+            try:
+                db.session.commit()
+                return redirect(url_for('admin_pedidos'))
+            except:
+                return redirect(url_for('error'))
+    else:
+        return redirect(url_for('home'))
+
+
+@app.route('/consola/admin/pedidos/restrasar/estado/<int:id>')
+@login_required
+def retrasar_pedidos(id):
+    pass
 
 
 if __name__ == "__main__":

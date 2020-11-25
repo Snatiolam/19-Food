@@ -1,4 +1,4 @@
-from app import *
+from urrego import *
 
 db.create_all()
 import insertarCuentas, insertarRestaurantes, insertarProductos
